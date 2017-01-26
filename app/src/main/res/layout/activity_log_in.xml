@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+
+    android:id="@+id/activity_login"
+    android:background="@color/Red_LightCyan"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.example.usuario.asde.LogIn">
+
+
+    <ImageView
+        android:layout_width="200dp"
+        android:layout_height="170dp"
+        android:layout_marginBottom="@dimen/activity_horizontal_margin2"
+        android:layout_gravity="center_horizontal"
+        android:src="@mipmap/asde"
+        android:id="@+id/imageView" />
+
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <EditText
+
+            android:layout_marginTop="@dimen/activity_horizontal_margin2"
+            android:gravity="center_horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text"
+            android:id="@+id/editTextCorreo"
+            android:hint="Ingrese su Correo" />
+    </android.support.design.widget.TextInputLayout>
+
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:layout_marginTop="@dimen/activity_vertical_margin2"
+            android:gravity="center_horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text"
+            android:id="@+id/editTextPassword"
+            android:hint="Ingrese su Clave" />
+    </android.support.design.widget.TextInputLayout>
+
+
+    <Button
+        android:text="Ingresar"
+        android:layout_marginTop="@dimen/top_margen_wide"
+        android:layout_gravity="center_horizontal"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/buttonLogin" />
+
+    <TextView
+        android:text="Registrarse"
+        android:layout_marginTop="35dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:id="@+id/txtViewRegistrarse"
+        android:textSize="18sp" />
+
+    <Switch
+        android:text="Borrar Datos"
+        android:textColor="@color/Black"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="220dp"
+        android:layout_marginTop="20dp"
+        android:id="@+id/switchRecordar" />
+</LinearLayout>
