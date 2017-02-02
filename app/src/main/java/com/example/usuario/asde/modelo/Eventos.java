@@ -16,8 +16,9 @@ public class Eventos {
     private String horaevento;
     private String horaeventogmt;
     private String estatus;
+    private String Id;
 
-
+public Eventos(){}
     public Eventos(String nombre, String apellido, String detalle, String latitud, String longitud, String direccion, String foto, String pathFoto, String horaevento,String horaeventogmt, String estatus) {
         this.nombre = nombre;
         this.apellido = apellido;
@@ -60,7 +61,8 @@ public class Eventos {
 
 
 
-
+public String getId(){return Id;}
+    public void setId(String Id){this.Id=Id;}
 
     public String getNombre() {
         return nombre;

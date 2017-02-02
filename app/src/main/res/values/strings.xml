@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">Asde</string>
+    <string-array name="spinner_evento">
+        <item>Escombros</item>
+        <item>Publicidad</item>
+        <item>Basura</item>
+        <item>Iluminacion</item>
+        <item>Reparacicon</item>
+    </string-array>
 </resources>

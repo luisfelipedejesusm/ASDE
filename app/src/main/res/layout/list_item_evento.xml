@@ -6,8 +6,7 @@
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
     android:padding="16dp"
-    android:minHeight="@dimen/list_item_height"
-    android:background="@color/LemonChiffon">
+    android:minHeight="@dimen/list_item_height">
 
     <ImageView
         android:layout_width="@dimen/list_item_height"

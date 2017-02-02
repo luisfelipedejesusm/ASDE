@@ -1,6 +1,8 @@
 package com.example.usuario.asde;
 
 import android.app.Activity;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
@@ -11,9 +13,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.usuario.asde.modelo.Eventos;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 
 import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.List;
 
 /**
@@ -58,6 +64,12 @@ public class clientesAdapter extends ArrayAdapter<Eventos> {
         if(imgFile.exists()){
 
             imagenEvento.setImageURI(Uri.fromFile(imgFile));
+
+        }else{
+            //instace of imageloader
+            ImageLoader imageLoader = ImageLoader.getInstance();
+            // with this method I get the image from the server and place it into my ImageView
+            imageLoader.displayImage("http://199.89.55.4/ASDE/storage/app/"+CurrentCliente.getPathFoto(),imagenEvento );
 
         }
 

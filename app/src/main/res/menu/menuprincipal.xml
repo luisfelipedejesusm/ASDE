@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/newEventButton"
+        android:title="Nuevo Evento"/>
+    <item
+        android:id="@+id/eventsRegistered"
+        android:title="Registros"/>
+    <item
+        android:id="@+id/myEvents"
+        android:title="Mis Tareas"/>
+    <item android:title="Log Out"
+        android:id="@+id/logout"/>
+</menu>

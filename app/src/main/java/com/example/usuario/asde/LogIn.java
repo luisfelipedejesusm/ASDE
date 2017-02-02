@@ -1,6 +1,8 @@
 package com.example.usuario.asde;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -14,9 +16,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.NetworkError;
+import com.android.volley.NoConnectionError;
+import com.android.volley.ParseError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
+import com.android.volley.ServerError;
+import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
@@ -31,6 +38,7 @@ import java.util.Map;
 public class LogIn extends AppCompatActivity{
 
     public static final String LOGIN_URL = "http://199.89.55.4/ASDE/api/v1/operador/login";
+    public static final String Event_url = "http://199.89.55.4/ASDE/api/v1/operador/fetchEvents";
 
 
     public static final String KEY_CORREO = "correo";
@@ -44,7 +52,6 @@ public class LogIn extends AppCompatActivity{
 
     private String correo;
     private String clave;
-    private String id; // Valor de respuesta del servidor utilizado para validar el login
 
 
     @Override
@@ -138,28 +145,35 @@ public class LogIn extends AppCompatActivity{
                             new Response.Listener<String>() {
                                 @Override
                                 public void onResponse(String response) {
-
+                                    String id = "";
+                                    String rol = "";
                                     try {
                                         JSONObject j = new JSONObject(response);
                                         JSONArray arrayJson = j.getJSONArray("posts");
                                         JSONObject reader = arrayJson.getJSONObject(0);
-                                        id = reader.getString("id");
-
-                                        Log.v("ID", id);
+                                        id = arrayJson.getJSONObject(0).getString("id");
+                                        rol = arrayJson.getJSONObject(0).getString("rolID");
 
                                     } catch (JSONException e) {
                                         e.printStackTrace();
                                     }
 
-                                    if (true) {
+                                    if (!id.equals("not found")) {
                                         //id != "not found"
                                         //!TextUtils.equals(id,"not found")
                                         Log.v("Response:", response);
+
+                                        // global variable for rolID.
+                                        SharedPreferences sharedpreferences = getSharedPreferences("CustomPreferences", Context.MODE_PRIVATE);
+                                        SharedPreferences.Editor editor = sharedpreferences.edit();
+                                        editor.putString("rolID", rol);
+                                        editor.putString("userID", id);
+                                        editor.commit();
+
                                         getPrincipal();
 
                                     } else {
-
-                                        Toast.makeText(LogIn.this, "Error en Usuario o Password" + response, Toast.LENGTH_LONG).show();
+                                        Toast.makeText(LogIn.this, "Error en Usuario o Password", Toast.LENGTH_SHORT).show();
                                     }
 
 
@@ -169,7 +183,17 @@ public class LogIn extends AppCompatActivity{
                                 @Override
                                 public void onErrorResponse(VolleyError error) {
                                     //Toast.makeText(login.this, error.toString(), Toast.LENGTH_LONG).show();
-                                    Toast.makeText(LogIn.this, "Tiempo para conexión finalizado, revise su conexion a internet" , Toast.LENGTH_LONG).show();
+                                    if (error instanceof TimeoutError || error instanceof NoConnectionError) {
+                                        Toast.makeText(LogIn.this, "Tiempo para conexiÃ³n finalizado, revise su conexion a internet",Toast.LENGTH_LONG).show();
+                                    } else if (error instanceof AuthFailureError) {
+                                        Toast.makeText(LogIn.this, "Usuario o ContraseÃ±a Incorrecta, Revise nuevamente su informacion",Toast.LENGTH_LONG).show();
+                                    } else if (error instanceof ServerError) {
+                                        Toast.makeText(LogIn.this, "Error en el servidor, Contactese con el suplidor de su aplicacion",Toast.LENGTH_LONG).show();
+                                    } else if (error instanceof NetworkError) {
+                                        Toast.makeText(LogIn.this, "Error de coneccion. Revise el estado de su coneccion a internet",Toast.LENGTH_LONG).show();
+                                    } else if (error instanceof ParseError) {
+                                        Toast.makeText(LogIn.this, "Problemas al ejecutar la aplicacion, Contactese con el suplidor de su aplicacion",Toast.LENGTH_LONG).show();
+                                    }
 
                                 }
                             }) {
