@@ -6,7 +6,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Location;
@@ -14,7 +13,6 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -51,13 +49,10 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.usuario.asde.auxiliares.Cadena;
-import com.example.usuario.asde.auxiliares.Utiles;
 import com.example.usuario.asde.modelo.Eventos;
-
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
-import com.google.gson.Gson;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
@@ -67,15 +62,12 @@ import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 public class principal extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
@@ -412,15 +404,23 @@ String[] opciones = {
             Bitmap bitmap = BitmapFactory.decodeFile(mPath);
             imgFoto.setImageBitmap(bitmap);
 
-            //Convertimos la imagen en String64
-
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.PNG,100,baos); //bm is the bitmap object the 10 is de quality 100 is the maximus
-            byte[] b = baos.toByteArray();
-            String aux = Base64.encodeToString(b, Base64.DEFAULT);
-            imagen64 = aux;
+            Bitmap bit = BitmapFactory.decodeFile(mPath);
+           getStringImage(bit);
 
         }
+    }
+
+
+    public void getStringImage(Bitmap bitmap){
+
+        //Convertimos la imagen en String64
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG,100,baos); //bm is the bitmap object the 10 is de quality 100 is the maximus
+        byte[] b = baos.toByteArray();
+        String aux = Base64.encodeToString(b, Base64.DEFAULT);
+        imagen64 = aux;
+
     }
 
 
