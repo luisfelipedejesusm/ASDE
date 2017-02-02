@@ -202,9 +202,11 @@ public class principal extends AppCompatActivity implements GoogleApiClient.Conn
             }
         });
 
-        btnEnviar.setOnClickListener(new View.OnClickListener() { // Validando formulario
+        btnEnviar.setOnClickListener(new View.OnClickListener() { // Validando formulario y enviando informacion a WebService
             @Override
             public void onClick(View v) {
+
+                Direccion = editDireccion.getText().toString().trim();
 
                 Spinner spiner = (Spinner) findViewById(R.id.spinner_evento);
                 String n = spiner.getSelectedItem().toString();
@@ -217,6 +219,9 @@ public class principal extends AppCompatActivity implements GoogleApiClient.Conn
                 }else if (false){
 
                     Toast.makeText(principal.this,"No puede enviar la misma imagen", Toast.LENGTH_SHORT).show();
+
+                }else if(TextUtils.equals(Direccion,"Desconocida")){
+                    Toast.makeText(principal.this, "Debe escribir la dirección manualmente", Toast.LENGTH_SHORT).show();
                 }
 
                 else if (imagen64 != null && mPath != null && Direccion != null){ // Validando datos generados a excepcion de Direccion
@@ -232,7 +237,6 @@ public class principal extends AppCompatActivity implements GoogleApiClient.Conn
 
             }
         });
-
 
 
 
@@ -343,7 +347,7 @@ String[] opciones = {
       }
 
 
-    public void openCamara(){
+    public void openCamara(){ //Funcion que controla el comportamiento de la camara
 
         File file = new File (Environment.getExternalStorageDirectory(),MEDIA_DIRECTORY);
         boolean isDirectoryCreated = file.exists();
@@ -411,14 +415,14 @@ String[] opciones = {
     }
 
 
-    public void getStringImage(Bitmap bitmap){
-        //Convertimos la imagen en String64
+    public void getStringImage(Bitmap bitmap){ //Convertimos la imagen en un String64 para poder enviarla al WebService segun requerimiento
+
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.PNG,100,baos); //bm is the bitmap object the 10 is de quality 100 is the maximus
         byte[] b = baos.toByteArray();
         String aux = Base64.encodeToString(b, Base64.DEFAULT);
-        imagen64 = aux;
+        imagen64 = aux; //Actualizamos la variable global image64
 
     }
 
@@ -462,9 +466,11 @@ String[] opciones = {
 
 
         } else {
-            Latitud = "-33.86881";
-            Longitud = "151.20929";
+          /*  Latitud = "-33.86881";
+            Longitud = "151.20929";*/
 
+            Latitud = "Desconocida";
+            Longitud = "Desconocida";
         }
     }
 

@@ -87,11 +87,12 @@
             android:hint="Dirección (Pulse para obtener direccion)"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:maxLines="2"
+            android:maxLength="90"
             android:layout_marginTop="100dp"
             android:id="@+id/editDireccion"
-            android:inputType="text|textAutoComplete"
             tools:text="Dirección:"
-            />
+            android:inputType="textAutoComplete|textMultiLine" />
 
     </android.support.design.widget.TextInputLayout>
 
