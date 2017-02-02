@@ -405,7 +405,7 @@ String[] opciones = {
             imgFoto.setImageBitmap(bitmap);
 
             Bitmap bit = BitmapFactory.decodeFile(mPath);
-           getStringImage(bit);
+            getStringImage(bit);
 
         }
     }
