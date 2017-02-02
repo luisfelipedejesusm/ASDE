@@ -182,8 +182,8 @@ public class principal extends AppCompatActivity implements GoogleApiClient.Conn
             @Override
             public void onClick(View v) {
 
-                getDireccion("http://maps.googleapis.com/maps/api/geocode/json?latlng=" + Latitud + ","+ Longitud + "&sensor=true");
-                Toast.makeText(principal.this, "Pulse hasta obtener respuesta", Toast.LENGTH_SHORT).show();
+        //        getDireccion("http://maps.googleapis.com/maps/api/geocode/json?latlng=" + Latitud + ","+ Longitud + "&sensor=true");
+        //        Toast.makeText(principal.this, "Pulse hasta obtener respuesta", Toast.LENGTH_SHORT).show();
 
             }
         });
@@ -419,6 +419,8 @@ String[] opciones = {
         byte[] b = baos.toByteArray();
         String aux = Base64.encodeToString(b, Base64.DEFAULT);
         imagen64 = aux;
+        getDireccion("http://maps.googleapis.com/maps/api/geocode/json?latlng=" + Latitud + ","+ Longitud + "&sensor=true");
+
 
     }
 
@@ -704,6 +706,7 @@ String[] opciones = {
 
 
     }
+
 
 }
 

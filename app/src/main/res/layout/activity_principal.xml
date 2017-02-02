@@ -89,6 +89,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="100dp"
             android:id="@+id/editDireccion"
+            android:enabled="false"
             android:inputType="text|textAutoComplete"
             tools:text="Dirección:"
             />

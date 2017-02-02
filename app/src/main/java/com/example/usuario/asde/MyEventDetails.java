@@ -1,9 +1,25 @@
 package com.example.usuario.asde;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.location.Location;
+import android.location.LocationListener;
+import android.media.MediaScannerConnection;
+import android.net.Uri;
+import android.os.Environment;
+import android.provider.MediaStore;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -25,18 +41,48 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.usuario.asde.modelo.Eventos;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationServices;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 
-public class MyEventDetails extends AppCompatActivity {
+public class MyEventDetails extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
+
+    GoogleApiClient mGoogleApiClient = null;
+    private static final int PETICION_PERMISO_LOCALIZACION = 101;
+    private static final String LOGTAG = "android-localizacion";
+    Eventos c_evento;
+
+    String Latitud;
+    String Longitud;
+    private static String  APP_DIRECTORY = "MyPictureApp/";
+    private static String MEDIA_DIRECTORY = APP_DIRECTORY + "PictureApp";
+
+    private final int MY_PERMISSIONS = 100;
+    private final int PHOTO_CODE = 200;
+    private final int SELECT_PICTURE = 300;
+
+    String imagen64; // imagen en formato string64
+    String mPath; // direccion de la imagen en el celular
+    String fechaFoto;
+
+    public static final String UPDATE_EVENT = "http://199.89.55.4/ASDE/api/v1/operador/updatevent";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +91,79 @@ public class MyEventDetails extends AppCompatActivity {
 
         //get clicked event using its id
         getMyEvents();
+
+        if (mGoogleApiClient == null) {
+            mGoogleApiClient = new GoogleApiClient.Builder(this)
+                    .enableAutoManage(this, this)
+                    .addConnectionCallbacks(this)
+                    .addOnConnectionFailedListener(this)
+                    .addApi(LocationServices.API)
+                    .build();
+
+        }
+    }
+public void cerrar_evento_request(){
+    RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+
+    StringRequest stringRequest = new StringRequest(Request.Method.POST, UPDATE_EVENT,
+            new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+
+                    if(response != null){
+
+                        Toast.makeText(MyEventDetails.this, "Evento Cerrado Exitosamente", Toast.LENGTH_SHORT).show();
+
+                    }
+
+
+                }
+            },
+            new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    // Toast.makeText(principal.this, error.toString(), Toast.LENGTH_LONG).show();
+                    if (error instanceof TimeoutError || error instanceof NoConnectionError) {
+                        Toast.makeText(MyEventDetails.this, "Tiempo para conexiÃ³n finalizado, revise su conexion a internet",Toast.LENGTH_LONG).show();
+                    } else if (error instanceof AuthFailureError) {
+                        Toast.makeText(MyEventDetails.this, "Usuario o ContraseÃ±a Incorrecta, Revise nuevamente su informacion",Toast.LENGTH_LONG).show();
+                    } else if (error instanceof ServerError) {
+                        Toast.makeText(MyEventDetails.this, "Error en el servidor, Contactese con el suplidor de su aplicacion",Toast.LENGTH_LONG).show();
+                    } else if (error instanceof NetworkError) {
+                        Toast.makeText(MyEventDetails.this, "Error de coneccion. Revise el estado de su coneccion a internet",Toast.LENGTH_LONG).show();
+                    } else if (error instanceof ParseError) {
+                        Toast.makeText(MyEventDetails.this, "Problemas al ejecutar la aplicacion, Contactese con el suplidor de su aplicacion",Toast.LENGTH_LONG).show();
+                    }
+
+                }
+            }) {
+
+        @Override
+        protected Map<String, String> getParams() throws AuthFailureError {
+
+            Map<String, String> map = new HashMap<String, String>();
+            map.put("eventoID", c_evento.getId());
+            map.put("foto", imagen64);
+            return map;
+        }
+    };
+
+
+    requestQueue.add(stringRequest);
+    redirectToMenu();
+}
+    private void redirectToMenu(){
+        Intent intent = new Intent(MyEventDetails.this,principal.class);
+        startActivity(intent);
+        finish();
+    }
+    public void cerrarEventoConfirmar(View view){
+        if (imagen64!=null ){
+            cerrar_evento_request();
+        }else{
+            Toast.makeText(this, "Debe tomar una foto antes de cerrar", Toast.LENGTH_SHORT).show();
+        }
+
     }
 
     //showing the panel for closing events
@@ -96,6 +215,8 @@ public class MyEventDetails extends AppCompatActivity {
                             evento.setNombre(obj.getString("nombre"));
                             evento.setDetalle(obj.getString("detalle"));
                             evento.setDireccion(obj.getString("direccion"));
+                            evento.setLatitud(obj.getString("latitud"));
+                            evento.setLongitud(obj.getString("longitud"));
                             evento.setPathFoto(getFileName(obj.getString("image_path")));
 
                             updateInfo(evento);
@@ -142,6 +263,7 @@ public class MyEventDetails extends AppCompatActivity {
     }
 //here we take the eent from the other thread and update the textviews in the activity
     private void updateInfo(Eventos evento) {
+        c_evento = evento;
         ImageLoader imageLoader = ImageLoader.getInstance();
         TextView txtFecha = (TextView) findViewById(R.id.txtfecha);
         TextView txtDescripcion = (TextView) findViewById(R.id.txtdescripcion);
@@ -159,5 +281,172 @@ public class MyEventDetails extends AppCompatActivity {
 
     }
 
+    public void tomarFoto(View view){
+        Location loc1 = new Location("punto1");
+        Location loc2 = new Location("punto2");
+        loc1.setLatitude(Double.parseDouble(c_evento.getLatitud()));
+        loc1.setLongitude(Double.parseDouble(c_evento.getLongitud()));
+        loc2.setLatitude(Double.parseDouble(Latitud));
+        loc2.setLongitude(Double.parseDouble(Longitud));
+        double distancia_metros = loc1.distanceTo(loc2);
+        if (distancia_metros<50){
+            openCamara();
+        }else{
+            Toast.makeText(this, "No haga trampa", Toast.LENGTH_SHORT).show();
+        }
+    }
 
+
+    public void openCamara(){
+
+        File file = new File (Environment.getExternalStorageDirectory(),MEDIA_DIRECTORY);
+        boolean isDirectoryCreated = file.exists();
+
+        if(!isDirectoryCreated){
+            isDirectoryCreated = file.mkdirs();
+        }
+
+        if(isDirectoryCreated){
+            String imagename = fechaFoto + ".png";
+            mPath = Environment.getExternalStorageDirectory() + File.separator + MEDIA_DIRECTORY + File.separator + imagename;
+
+            File newfile = new File(mPath);
+            Intent intenCamera = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            intenCamera.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(newfile));
+            startActivityForResult(intenCamera,PHOTO_CODE);
+        }
+
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+
+        if(resultCode == RESULT_OK && requestCode == PHOTO_CODE){
+
+            MediaScannerConnection.scanFile(this,
+                    new String[]{mPath}, null,
+                    new MediaScannerConnection.OnScanCompletedListener() {
+                        @Override
+                        public void onScanCompleted(String path, Uri uri) {
+                            Log.i("ExternalStorage", "Scanned" + path + ":");
+                            Log.i("ExternalStorage", "-> Uri" + uri);
+                        }
+                    });
+
+            Bitmap bitmap = BitmapFactory.decodeFile(mPath);
+            ImageView imgfoto = (ImageView) findViewById(R.id.img_foto_cerrar);
+            imgfoto.setImageBitmap(bitmap);
+
+            Bitmap bit = BitmapFactory.decodeFile(mPath);
+            getStringImage(bit);
+
+        }
+    }
+
+
+    public void getStringImage(Bitmap bitmap){
+        //Convertimos la imagen en String64
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG,100,baos); //bm is the bitmap object the 10 is de quality 100 is the maximus
+        byte[] b = baos.toByteArray();
+        String aux = Base64.encodeToString(b, Base64.DEFAULT);
+        imagen64 = aux;
+
+    }
+
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+
+
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    PETICION_PERMISO_LOCALIZACION);
+
+        }else{
+            Location lastLocation =
+                    LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+            updateUI(lastLocation);
+        }
+
+    }
+
+    private void updateUI(Location loc) {
+        if (loc != null) {
+            Latitud = String.valueOf(loc.getLatitude());
+            Longitud =  String.valueOf(loc.getLongitude());
+
+
+        } else {
+            Latitud = "-33.86881";
+            Longitud = "151.20929";
+
+        }
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+        //Se ha interrumpido la conexión con Google Play Services
+        Log.e(LOGTAG, "Se ha interrumpido la conexión con Google Play Services");
+        Toast.makeText(getApplicationContext(),"Se ha interrumpido la conexión con Google Play Services", Toast.LENGTH_SHORT).show();
+
+
+
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        Log.e(LOGTAG, "Error grave al conectar con Google Play Services");
+        Toast.makeText(this, "Error grave al conectar con Google Play Services", Toast.LENGTH_SHORT).show();
+
+    }
+
+
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        if (requestCode == PETICION_PERMISO_LOCALIZACION) {
+            if (grantResults.length == 1
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                //Permiso concedido
+
+                @SuppressWarnings("MissingPermission")
+                Location lastLocation =
+                        LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+
+                updateUI(lastLocation);
+
+            } else {
+                //Permiso denegado:
+                //Deberíamos deshabilitar toda la funcionalidad relativa a la localización.
+
+                Log.e(LOGTAG, "Permiso denegado");
+            }
+        }
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(String provider) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(String provider) {
+
+    }
 }

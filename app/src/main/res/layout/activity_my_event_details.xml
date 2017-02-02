@@ -125,7 +125,9 @@
                         android:layout_height="match_parent"
                         android:layout_centerHorizontal="true"
                         android:layout_centerVertical="true"
-                        android:src="@mipmap/camera"/>
+                        android:src="@mipmap/camera"
+                        android:onClick="tomarFoto"
+                        android:id="@+id/img_foto_cerrar"/>
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -155,7 +157,8 @@
                         android:padding="10dp"
 
                         android:layout_gravity="right"
-                        android:text="Confirmar"/>
+                        android:text="Confirmar"
+                        android:onClick="cerrarEventoConfirmar"/>
 
                 </LinearLayout>
             </LinearLayout>
