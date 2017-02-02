@@ -412,7 +412,6 @@ String[] opciones = {
 
 
     public void getStringImage(Bitmap bitmap){
-
         //Convertimos la imagen en String64
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -632,11 +631,10 @@ String[] opciones = {
     private void envioEvento() {
 
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
+
 
                 try {
+                    RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
 
                     StringRequest stringRequest = new StringRequest(Request.Method.POST, SEND_DATA_URL,
                             new Response.Listener<String>() {
@@ -690,7 +688,7 @@ String[] opciones = {
                         }
                     };
 
-                    RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+
                     requestQueue.add(stringRequest);
 
                 } catch (Exception e) {
@@ -702,8 +700,7 @@ String[] opciones = {
                 }
 
 
-            }
-        }).start();
+
 
 
     }
