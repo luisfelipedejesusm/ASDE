@@ -135,12 +135,9 @@ public class LogIn extends AppCompatActivity{
         // clave = editTextPassword.getText().toString().trim();
 
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
 
                 try {
-
+                    RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
                     StringRequest stringRequest = new StringRequest(Request.Method.POST, LOGIN_URL,
                             new Response.Listener<String>() {
                                 @Override
@@ -208,7 +205,7 @@ public class LogIn extends AppCompatActivity{
                         }
                     };
 
-                    RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+
                     requestQueue.add(stringRequest);
 
                 } catch (Exception e) {
@@ -220,8 +217,6 @@ public class LogIn extends AppCompatActivity{
                 }
 
 
-            }
-        }).start();
 
 
     }// Cierre de Clase User Login
