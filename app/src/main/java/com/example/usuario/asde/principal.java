@@ -423,12 +423,15 @@ String[] opciones = {
 
             //bitmap = BitmapFactory.decodeFile(mPath);
 
-            bitmap = getBitmap(mPath);
+            String imagename = fechaFoto + ".png";
+            mPath = Environment.getExternalStorageDirectory() + File.separator + MEDIA_DIRECTORY + File.separator + imagename;
+
+            bitmap = getBitmap("/mnt/shared/Image/20160613_230238.jpg");
 
            // Glide.with(this).load(mPath).into(imgFoto);
             imgFoto.setImageBitmap(bitmap);
        //     getStringImage(bit);
-         //   new ConvertStringImage().execute(bitmap);//Creacion y llamada a la tarea ConvertStringImage
+            new ConvertStringImage().execute(bitmap);//Creacion y llamada a la tarea ConvertStringImage
             getDireccion("http://maps.googleapis.com/maps/api/geocode/json?latlng=" + Latitud + ","+ Longitud + "&sensor=true");
 
         }
