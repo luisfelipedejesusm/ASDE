@@ -22,6 +22,7 @@
     <color name="colorPrimary">#2BBBAD</color>
     <color name="colorPrimaryDark">#259f93</color>
     <color name="colorAccent">#FF8800</color>
+    <color name="colorPrimaryDarkFaded">#4d259f93</color>
 
 
     <color name="Black">#FF000000</color>

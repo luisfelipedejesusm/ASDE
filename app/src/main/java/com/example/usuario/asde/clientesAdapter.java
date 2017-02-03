@@ -10,8 +10,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.example.usuario.asde.modelo.Eventos;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -67,9 +72,27 @@ public class clientesAdapter extends ArrayAdapter<Eventos> {
 
         }else{
             //instace of imageloader
-            ImageLoader imageLoader = ImageLoader.getInstance();
+            //ImageLoader imageLoader = ImageLoader.getInstance();
             // with this method I get the image from the server and place it into my ImageView
-            imageLoader.displayImage("http://199.89.55.4/ASDE/storage/app/"+CurrentCliente.getPathFoto(),imagenEvento );
+            //imageLoader.displayImage("http://199.89.55.4/ASDE/storage/app/"+CurrentCliente.getPathFoto(),imagenEvento );
+            final ProgressBar pb = (ProgressBar) listItemView.findViewById(R.id.progressbar_events);
+            Glide.with(getContext())
+                    .load("http://199.89.55.4/ASDE/storage/app"+CurrentCliente.getPathFoto())
+                    .listener(new RequestListener<String, GlideDrawable>() {
+                        @Override
+                        public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+                            pb.setVisibility(View.GONE);
+                            return false;
+                        }
+
+                        @Override
+                        public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                            pb.setVisibility(View.GONE);
+                            return false;
+                        }
+                    })
+                    .into(imagenEvento);
+
 
         }
 

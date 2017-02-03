@@ -1,6 +1,7 @@
 package com.example.usuario.asde;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -13,6 +14,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -29,10 +31,13 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -88,6 +93,8 @@ public class principal extends AppCompatActivity implements GoogleApiClient.Conn
     EditText editDetalle;
     EditText editDireccion;
 
+    ProgressDialog progressDialog;
+
     /***************Valores usados en Magic Camera para la obtencion de la foto******/
 
     private static String  APP_DIRECTORY = "MyPictureApp/";
@@ -133,6 +140,7 @@ public class principal extends AppCompatActivity implements GoogleApiClient.Conn
 
     Eventos evento;
 
+
     /*************************Variable ListView para contener los registros nuevos **********/
     /********************Posiblemente sea sustituido por  la tabla de SQLITE ***************/
 
@@ -146,6 +154,8 @@ public class principal extends AppCompatActivity implements GoogleApiClient.Conn
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_principal);
+
+
 
         //validate if user is already logged in, if not, redirect to LogIn page
         checkForUsers();
@@ -182,8 +192,8 @@ public class principal extends AppCompatActivity implements GoogleApiClient.Conn
             @Override
             public void onClick(View v) {
 
-                getDireccion("http://maps.googleapis.com/maps/api/geocode/json?latlng=" + Latitud + ","+ Longitud + "&sensor=true");
-                Toast.makeText(principal.this, "Pulse hasta obtener respuesta", Toast.LENGTH_SHORT).show();
+        //        getDireccion("http://maps.googleapis.com/maps/api/geocode/json?latlng=" + Latitud + ","+ Longitud + "&sensor=true");
+        //        Toast.makeText(principal.this, "Pulse hasta obtener respuesta", Toast.LENGTH_SHORT).show();
 
             }
         });
@@ -202,11 +212,9 @@ public class principal extends AppCompatActivity implements GoogleApiClient.Conn
             }
         });
 
-        btnEnviar.setOnClickListener(new View.OnClickListener() { // Validando formulario y enviando informacion a WebService
+        btnEnviar.setOnClickListener(new View.OnClickListener() { // Validando formulario
             @Override
             public void onClick(View v) {
-
-                Direccion = editDireccion.getText().toString().trim();
 
                 Spinner spiner = (Spinner) findViewById(R.id.spinner_evento);
                 String n = spiner.getSelectedItem().toString();
@@ -219,9 +227,6 @@ public class principal extends AppCompatActivity implements GoogleApiClient.Conn
                 }else if (false){
 
                     Toast.makeText(principal.this,"No puede enviar la misma imagen", Toast.LENGTH_SHORT).show();
-
-                }else if(TextUtils.equals(Direccion,"Desconocida")){
-                    Toast.makeText(principal.this, "Debe escribir la dirección manualmente", Toast.LENGTH_SHORT).show();
                 }
 
                 else if (imagen64 != null && mPath != null && Direccion != null){ // Validando datos generados a excepcion de Direccion
@@ -237,6 +242,7 @@ public class principal extends AppCompatActivity implements GoogleApiClient.Conn
 
             }
         });
+
 
 
 
@@ -259,16 +265,24 @@ String[] opciones = {
 
         spiner.setAdapter(array);
 
-        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this).build();
-        ImageLoader.getInstance().init(config);
-
-
+        //ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this).build();
+       // ImageLoader.getInstance().init(config);
 
 
 
 
     } // Cierre de la funcion onCreate
 
+
+
+
+    private void sendingData(){
+        progressDialog = ProgressDialog.show(this,"","Enviando Datos, Espere....", true);
+
+    }
+    private void dataRetrived(){
+        progressDialog.dismiss();
+    }
 
     //function to confirm if an user is already logged in through sharedPreferences file
     private void checkForUsers() {
@@ -347,7 +361,7 @@ String[] opciones = {
       }
 
 
-    public void openCamara(){ //Funcion que controla el comportamiento de la camara
+    public void openCamara(){
 
         File file = new File (Environment.getExternalStorageDirectory(),MEDIA_DIRECTORY);
         boolean isDirectoryCreated = file.exists();
@@ -409,22 +423,40 @@ String[] opciones = {
             imgFoto.setImageBitmap(bitmap);
 
             Bitmap bit = BitmapFactory.decodeFile(mPath);
-           getStringImage(bit);
+       //     getStringImage(bit);
+            new ConvertStringImage().execute(bit);
 
         }
     }
 
+    private class ConvertStringImage extends AsyncTask<Bitmap, Void, Void>{
 
-    public void getStringImage(Bitmap bitmap){ //Convertimos la imagen en un String64 para poder enviarla al WebService segun requerimiento
+        @Override
+        protected Void doInBackground(Bitmap... params) {
+            Bitmap bitmap = params[0];
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.PNG,100,baos); //bm is the bitmap object the 10 is de quality 100 is the maximus
+            byte[] b = baos.toByteArray();
+            String aux = Base64.encodeToString(b, Base64.DEFAULT);
+            imagen64 = aux;
+            getDireccion("http://maps.googleapis.com/maps/api/geocode/json?latlng=" + Latitud + ","+ Longitud + "&sensor=true");
+            return null;
+        }
 
+    }
+
+    /*public void getStringImage(Bitmap bitmap){
+        //Convertimos la imagen en String64
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.PNG,100,baos); //bm is the bitmap object the 10 is de quality 100 is the maximus
         byte[] b = baos.toByteArray();
         String aux = Base64.encodeToString(b, Base64.DEFAULT);
-        imagen64 = aux; //Actualizamos la variable global image64
+        imagen64 = aux;
+        getDireccion("http://maps.googleapis.com/maps/api/geocode/json?latlng=" + Latitud + ","+ Longitud + "&sensor=true");
 
-    }
+
+    }*/
 
 
 
@@ -466,11 +498,9 @@ String[] opciones = {
 
 
         } else {
-          /*  Latitud = "-33.86881";
-            Longitud = "151.20929";*/
+            Latitud = "-33.86881";
+            Longitud = "151.20929";
 
-            Latitud = "Desconocida";
-            Longitud = "Desconocida";
         }
     }
 
@@ -640,6 +670,7 @@ String[] opciones = {
 
 
                 try {
+                    sendingData();
                     RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
 
                     StringRequest stringRequest = new StringRequest(Request.Method.POST, SEND_DATA_URL,
@@ -649,6 +680,7 @@ String[] opciones = {
 
                                     if(response != null){
 
+                                        dataRetrived();
                                         Toast.makeText(principal.this, "Evento Registrado Exitosamente", Toast.LENGTH_SHORT).show();
 
                                     }
@@ -659,6 +691,7 @@ String[] opciones = {
                             new Response.ErrorListener() {
                                 @Override
                                 public void onErrorResponse(VolleyError error) {
+                                    dataRetrived();
                                     // Toast.makeText(principal.this, error.toString(), Toast.LENGTH_LONG).show();
                                     if (error instanceof TimeoutError || error instanceof NoConnectionError) {
                                         Toast.makeText(principal.this, "Tiempo para conexiÃ³n finalizado, revise su conexion a internet",Toast.LENGTH_LONG).show();
@@ -698,6 +731,7 @@ String[] opciones = {
                     requestQueue.add(stringRequest);
 
                 } catch (Exception e) {
+                    dataRetrived();
                     AlertDialog.Builder builderDos = new AlertDialog.Builder(principal.this);
                     builderDos.setMessage("No se ha logrado enviar el evento, revise su conexión a internet")
                             .setNegativeButton("Intente de nuevo", null)
@@ -710,6 +744,7 @@ String[] opciones = {
 
 
     }
+
 
 }
 
