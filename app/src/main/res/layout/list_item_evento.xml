@@ -7,6 +7,7 @@
     android:gravity="center_vertical"
     android:padding="16dp"
     android:minHeight="@dimen/list_item_height">
+
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
@@ -35,10 +36,31 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
+            android:textSize="15dp"
             android:textAppearance="?android:textAppearanceSmall"
             android:textStyle="bold"
             android:gravity="bottom"
             tools:text="Direccion"/>
+
+        <TextView
+            android:id="@+id/txtCategoria"
+            android:includeFontPadding="true"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+
+            android:textStyle="bold"
+            android:textSize="15dp"
+            android:gravity="top"
+            tools:text="Categoria"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:padding="10dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
+            android:background="@color/Black_transparent_black_percent_30"
+            ></LinearLayout>
 
         <TextView
             android:id="@+id/txtHora"
@@ -46,7 +68,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:textAppearance="?android:textAppearanceMedium"
+            android:textSize="17dp"
             android:textStyle="bold"
             android:gravity="top"
             tools:text="Hora"/>

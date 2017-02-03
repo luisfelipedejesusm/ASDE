@@ -25,7 +25,6 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -50,7 +49,6 @@ import com.example.usuario.asde.modelo.Eventos;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
-import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -58,11 +56,6 @@ import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -218,7 +211,7 @@ public void cerrar_evento_request(){
                             JSONObject obj = arrayJson.getJSONObject(0);
                             evento.setId(obj.getString("id"));
                             evento.setHoraevento(obj.getString("created_at"));
-                            evento.setNombre(obj.getString("nombre"));
+                            evento.setCategoria(obj.getString("nombre"));
                             evento.setDetalle(obj.getString("detalle"));
                             evento.setDireccion(obj.getString("direccion"));
                             evento.setLatitud(obj.getString("latitud"));
@@ -297,7 +290,7 @@ public void cerrar_evento_request(){
                 .into(imgEvento);
         txtFecha.setText(evento.getHoraevento());
         txtDescripcion.setText(evento.getDetalle());
-        txtCategoria.setText(evento.getNombre());
+        txtCategoria.setText(evento.getCategoria());
         txtDireccion.setText(evento.getDireccion());
 
 

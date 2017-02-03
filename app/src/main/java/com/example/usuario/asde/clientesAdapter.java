@@ -1,8 +1,6 @@
 package com.example.usuario.asde;
 
 import android.app.Activity;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
@@ -18,13 +16,8 @@ import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.example.usuario.asde.modelo.Eventos;
-import com.nostra13.universalimageloader.core.ImageLoader;
-
 
 import java.io.File;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.List;
 
 /**
@@ -53,9 +46,18 @@ public class clientesAdapter extends ArrayAdapter<Eventos> {
         Eventos CurrentCliente = getItem(position);
 
 
+
+
+
         // Se obtiene la direccion del evento y se asigna a la lista
         TextView direccionEvento = (TextView) listItemView.findViewById(R.id.txtDireccion);
+
         direccionEvento.setText(CurrentCliente.getDireccion());
+
+
+        TextView  textCategoria = (TextView) listItemView.findViewById(R.id.txtCategoria);
+        textCategoria.setText("Categoría: " + CurrentCliente.getCategoria());
+
 
         // Se obtiene la hora del evento
         TextView horaEvento = (TextView) listItemView.findViewById(R.id.txtHora);
@@ -66,6 +68,7 @@ public class clientesAdapter extends ArrayAdapter<Eventos> {
 
         String filepath = CurrentCliente.getPathFoto();
         File imgFile = new  File(filepath);
+
         if(imgFile.exists()){
 
             imagenEvento.setImageURI(Uri.fromFile(imgFile));
