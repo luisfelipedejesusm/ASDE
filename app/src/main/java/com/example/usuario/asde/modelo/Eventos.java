@@ -6,7 +6,6 @@ package com.example.usuario.asde.modelo;
 
 public class Eventos {
     private String nombre;
-    private String apellido;
     private String detalle;
     private String latitud;
     private String longitud;
@@ -19,9 +18,8 @@ public class Eventos {
     private String Id;
 
 public Eventos(){}
-    public Eventos(String nombre, String apellido, String detalle, String latitud, String longitud, String direccion, String foto, String pathFoto, String horaevento,String horaeventogmt, String estatus) {
+    public Eventos(String nombre, String detalle, String latitud, String longitud, String direccion, String foto, String pathFoto, String horaevento,String horaeventogmt, String estatus) {
         this.nombre = nombre;
-        this.apellido = apellido;
         this.detalle = detalle;
         this.latitud = latitud;
         this.longitud = longitud;
@@ -33,9 +31,9 @@ public Eventos(){}
         this.estatus = estatus;
     }
 
-    public Eventos(String nombre, String apellido, String detalle, String latitud, String longitud, String direccion, String pathFoto, String horaevento,String horaeventogmt, String estatus) {
+    public Eventos(String nombre, String detalle, String latitud, String longitud, String direccion, String pathFoto, String horaevento,String horaeventogmt, String estatus) {
         this.nombre = nombre;
-        this.apellido = apellido;
+
         this.detalle = detalle;
         this.latitud = latitud;
         this.longitud = longitud;
@@ -72,13 +70,9 @@ public String getId(){return Id;}
         this.nombre = nombre;
     }
 
-    public String getApellido() {
-        return apellido;
-    }
 
-    public void setApellido(String apellido) {
-        this.apellido = apellido;
-    }
+
+
 
     public String getDetalle() {
         return detalle;
