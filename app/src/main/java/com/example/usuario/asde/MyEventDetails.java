@@ -11,6 +11,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
@@ -23,6 +24,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -40,6 +42,10 @@ import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.example.usuario.asde.modelo.Eventos;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -264,14 +270,31 @@ public void cerrar_evento_request(){
 //here we take the eent from the other thread and update the textviews in the activity
     private void updateInfo(Eventos evento) {
         c_evento = evento;
-        ImageLoader imageLoader = ImageLoader.getInstance();
+        //ImageLoader imageLoader = ImageLoader.getInstance();
         TextView txtFecha = (TextView) findViewById(R.id.txtfecha);
         TextView txtDescripcion = (TextView) findViewById(R.id.txtdescripcion);
         TextView txtCategoria = (TextView) findViewById(R.id.txtcategoria);
         TextView txtDireccion = (TextView) findViewById(R.id.txtDireccion);
         ImageView imgEvento = (ImageView) findViewById(R.id.foto_evento);
+        final ProgressBar pb = (ProgressBar) findViewById(R.id.progress_bar_my_event_detail);
 
-        imageLoader.displayImage("http://199.89.55.4/ASDE/storage/app/"+evento.getPathFoto(), imgEvento);
+        //imageLoader.displayImage("http://199.89.55.4/ASDE/storage/app/"+evento.getPathFoto(), imgEvento);
+        Glide.with(this)
+                .load("http://199.89.55.4/ASDE/storage/app"+evento.getPathFoto())
+                .listener(new RequestListener<String, GlideDrawable>() {
+                    @Override
+                    public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+                        pb.setVisibility(View.GONE);
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                        pb.setVisibility(View.GONE);
+                        return false;
+                    }
+                })
+                .into(imgEvento);
         txtFecha.setText(evento.getHoraevento());
         txtDescripcion.setText(evento.getDetalle());
         txtCategoria.setText(evento.getNombre());
@@ -339,13 +362,28 @@ public void cerrar_evento_request(){
             imgfoto.setImageBitmap(bitmap);
 
             Bitmap bit = BitmapFactory.decodeFile(mPath);
-            getStringImage(bit);
+           // getStringImage(bit);
+            new ConvertStringImage().execute(bit);
+
 
         }
     }
 
+    private class ConvertStringImage extends AsyncTask<Bitmap, Void, Void> {
 
-    public void getStringImage(Bitmap bitmap){
+        @Override
+        protected Void doInBackground(Bitmap... params) {
+            Bitmap bitmap = params[0];
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.PNG,100,baos); //bm is the bitmap object the 10 is de quality 100 is the maximus
+            byte[] b = baos.toByteArray();
+            String aux = Base64.encodeToString(b, Base64.DEFAULT);
+            imagen64 = aux;
+            return null;
+        }
+
+    }
+   /* public void getStringImage(Bitmap bitmap){
         //Convertimos la imagen en String64
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -354,7 +392,7 @@ public void cerrar_evento_request(){
         String aux = Base64.encodeToString(b, Base64.DEFAULT);
         imagen64 = aux;
 
-    }
+    }*/
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {

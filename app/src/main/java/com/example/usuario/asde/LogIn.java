@@ -59,14 +59,14 @@ public class LogIn extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_log_in);
 
-        textViewRegistro = (TextView)findViewById(R.id.txtViewRegistrarse); // Para registro
+     //   textViewRegistro = (TextView)findViewById(R.id.txtViewRegistrarse); // Para registro
 
         editTextCorreo = (EditText) findViewById(R.id.editTextCorreo);
         editTextPassword = (EditText) findViewById(R.id.editTextPassword);
 
         buttonLogin = (Button) findViewById(R.id.buttonLogin); // Para login
 
-        switch_Recordar = (Switch)findViewById(R.id.switchRecordar);
+      //  switch_Recordar = (Switch)findViewById(R.id.switchRecordar);
 
 
 /*

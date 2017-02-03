@@ -10,7 +10,37 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.example.usuario.asde.MyEventDetails">
+<RelativeLayout
+    android:id="@+id/load_view"
+    android:visibility="gone"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true">
+        <ProgressBar
+            android:layout_gravity="center_horizontal"
+            android:id="@+id/progressbar_principal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
 
+            />
+        <TextView
+            android:layout_gravity="center_horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Enviando evento..."
+            />
+    </LinearLayout>
+
+
+</RelativeLayout>
 
     <ScrollView
         android:layout_width="match_parent"
@@ -39,7 +69,7 @@
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="180dp"
-        app:srcCompat="@mipmap/camara2"
+        android:src="@mipmap/take_photo"
         android:id="@+id/imageFoto"/>
 
     <android.support.design.widget.TextInputLayout
@@ -100,7 +130,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="20dp"
-android:popupBackground="#bdc3c7"
+        android:layout_marginBottom="10dp"
+        android:popupBackground="@color/colorPrimary"
         android:popupTheme="@array/spinner_evento"
 
 
@@ -115,10 +146,11 @@ android:popupBackground="#bdc3c7"
             android:text="Enviar"
             android:layout_width="0dp"
             android:layout_weight="1"
+            android:textColor="@color/White_Snow"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-
-            android:id="@+id/buttonEnviar" />
+            android:background="@drawable/buttons"
+            android:id="@+id/buttonEnviar"/>
     </LinearLayout>
 
 
