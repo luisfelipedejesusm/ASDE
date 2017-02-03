@@ -15,6 +15,7 @@ import android.location.LocationManager;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -31,13 +32,10 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -58,15 +56,15 @@ import com.example.usuario.asde.modelo.Eventos;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
+import org.apache.commons.io.FileUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -74,6 +72,9 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+
+import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
+import static android.Manifest.permission_group.CAMERA;
 
 public class principal extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
@@ -188,16 +189,15 @@ public class principal extends AppCompatActivity implements GoogleApiClient.Conn
 
         }
 
-        editDireccion.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
 
-        //        getDireccion("http://maps.googleapis.com/maps/api/geocode/json?latlng=" + Latitud + ","+ Longitud + "&sensor=true");
-        //        Toast.makeText(principal.this, "Pulse hasta obtener respuesta", Toast.LENGTH_SHORT).show();
-
-            }
-        });
-
+/*************solicitamos permisos para la Camara*****************************/
+/*
+        if(MyRequestStoragePermission()){
+            imgFoto.setEnabled(true);
+        }else{
+            imgFoto.setEnabled(true);
+        }
+*/
 
 
         /****************Click para Obtener Foto (Aqui tambien debemos iniciar el servicio de localizacion o antes) *****************/
@@ -272,6 +272,8 @@ String[] opciones = {
 
 
     } // Cierre de la funcion onCreate
+
+
 
 
 
@@ -356,8 +358,18 @@ String[] opciones = {
 
       private boolean myRequestStoragePermission(){
 
-          return  false;
+          if(Build.VERSION.SDK_INT < Build.VERSION_CODES.M){
+              return true;
+          }
 
+          if ((checkSelfPermission(WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED)&&
+                  (checkSelfPermission(CAMERA) == PackageManager.PERMISSION_GRANTED)){
+              return true;
+          }
+          if ((shouldShowRequestPermissionRationale(WRITE_EXTERNAL_STORAGE))||(shouldShowRequestPermissionRationale(CAMERA))) {
+
+          }
+          return false;
       }
 
 
@@ -419,12 +431,21 @@ String[] opciones = {
                         }
                     });
 
+
+           File file = FileUtils.getFile();
+            try {
+                byte [] b = FileUtils.readFileToByteArray(file);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
             Bitmap bitmap = BitmapFactory.decodeFile(mPath);
             imgFoto.setImageBitmap(bitmap);
 
             Bitmap bit = BitmapFactory.decodeFile(mPath);
        //     getStringImage(bit);
             new ConvertStringImage().execute(bit);
+
 
         }
     }
