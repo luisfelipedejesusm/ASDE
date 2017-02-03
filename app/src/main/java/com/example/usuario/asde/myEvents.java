@@ -3,10 +3,8 @@ package com.example.usuario.asde;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -108,9 +106,10 @@ public class myEvents extends AppCompatActivity {
                                             Eventos evento = new Eventos();
                                             JSONObject obj = arrayJson.getJSONObject(i);
                                             evento.setDireccion(obj.getString("direccion"));
-
+                                            evento.setCategoria(obj.getString("nombre"));
                                             evento.setPathFoto(getFileName(obj.getString("image_path")));
-                                            evento.setHoraevento(obj.getString("timeCreated"));
+                                            evento.setHoraevento(obj.getString("timeInitial"));
+
                                             evento.setId(obj.getString("id"));
                                             eventos.add(evento);
 

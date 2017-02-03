@@ -31,13 +31,10 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -53,14 +50,11 @@ import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.bumptech.glide.Glide;
 import com.example.usuario.asde.auxiliares.Cadena;
 import com.example.usuario.asde.modelo.Eventos;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -109,7 +103,7 @@ public class principal extends AppCompatActivity implements GoogleApiClient.Conn
     String mPath; // direccion de la imagen en el celular
     String fechaFoto, fechaFotoGmt;
 
-    //boolean bandera = true;
+    boolean bandera = true;
 
 
 
@@ -207,7 +201,7 @@ public class principal extends AppCompatActivity implements GoogleApiClient.Conn
             @Override
             public void onClick(View v) {
 
-                //bandera = false;
+                bandera = false;
                 openCamara();
 
 
@@ -226,7 +220,7 @@ public class principal extends AppCompatActivity implements GoogleApiClient.Conn
 
                     Toast.makeText(principal.this, "Debe llenar todos los campos", Toast.LENGTH_SHORT).show();
 
-                }else if (false){
+                }else if (bandera){
 
                     Toast.makeText(principal.this,"No puede enviar la misma imagen", Toast.LENGTH_SHORT).show();
                 }
@@ -237,7 +231,7 @@ public class principal extends AppCompatActivity implements GoogleApiClient.Conn
 
                     listaEvento.add(evento);
 
-                   // bandera = true;
+                    bandera = true;
 
                     envioEvento(); //Envio del evento al WebService
                 }
@@ -285,6 +279,8 @@ String[] opciones = {
     private void dataRetrived(){
         progressDialog.dismiss();
     }
+
+
 
     //function to confirm if an user is already logged in through sharedPreferences file
     private void checkForUsers() {
@@ -742,7 +738,7 @@ String[] opciones = {
                         protected Map<String, String> getParams() throws AuthFailureError {
 
                             Map<String, String> map = new HashMap<String, String>();
-                            map.put("categoria", evento.getNombre());
+                            map.put("categoria", evento.getCategoria());
                             map.put("detalle", evento.getDetalle());
                             map.put("latitud",evento.getLatitud());
                             map.put("longitud",evento.getLongitud());
