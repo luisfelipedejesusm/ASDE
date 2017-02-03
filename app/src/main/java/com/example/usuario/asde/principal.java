@@ -53,6 +53,7 @@ import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.bumptech.glide.Glide;
 import com.example.usuario.asde.auxiliares.Cadena;
 import com.example.usuario.asde.modelo.Eventos;
 import com.google.android.gms.common.ConnectionResult;
@@ -80,7 +81,7 @@ public class principal extends AppCompatActivity implements GoogleApiClient.Conn
     public static final String SEND_DATA_URL = "http://199.89.55.4/ASDE/api/v1/operador/senddata";
 
 
-
+    Bitmap bitmap;
 
     /********Entradas de la Interfaz de la Clase Principal.java***********/
 
@@ -208,6 +209,7 @@ public class principal extends AppCompatActivity implements GoogleApiClient.Conn
 
                 //bandera = false;
                 openCamara();
+
 
             }
         });
@@ -419,14 +421,43 @@ String[] opciones = {
                         }
                     });
 
-            Bitmap bitmap = BitmapFactory.decodeFile(mPath);
-            imgFoto.setImageBitmap(bitmap);
+            //bitmap = BitmapFactory.decodeFile(mPath);
 
-            Bitmap bit = BitmapFactory.decodeFile(mPath);
+            bitmap = getBitmap(mPath);
+
+           // Glide.with(this).load(mPath).into(imgFoto);
+            imgFoto.setImageBitmap(bitmap);
        //     getStringImage(bit);
-            new ConvertStringImage().execute(bit);
+         //   new ConvertStringImage().execute(bitmap);//Creacion y llamada a la tarea ConvertStringImage
+            getDireccion("http://maps.googleapis.com/maps/api/geocode/json?latlng=" + Latitud + ","+ Longitud + "&sensor=true");
 
         }
+    }
+
+    public Bitmap getBitmap(String path){
+        Bitmap bitmap = null;
+        BitmapFactory.Options options;
+        try {
+            bitmap = BitmapFactory.decodeFile(path);
+            return bitmap;
+        } catch (OutOfMemoryError e) {
+            try {
+                options = new BitmapFactory.Options();
+                for (options.inSampleSize = 1;options.inSampleSize<=32; options.inSampleSize++){
+                    try{
+                        bitmap = BitmapFactory.decodeFile(path, options);
+                        break;
+                    }catch (OutOfMemoryError oom){
+                        bitmap = null;
+                    }
+                }
+            } catch(Exception ex) {
+                return null;
+            }
+        }
+        Toast.makeText(this, bitmap.getWidth(), Toast.LENGTH_SHORT).show();
+        return bitmap;
+
     }
 
     private class ConvertStringImage extends AsyncTask<Bitmap, Void, Void>{
@@ -439,7 +470,6 @@ String[] opciones = {
             byte[] b = baos.toByteArray();
             String aux = Base64.encodeToString(b, Base64.DEFAULT);
             imagen64 = aux;
-            getDireccion("http://maps.googleapis.com/maps/api/geocode/json?latlng=" + Latitud + ","+ Longitud + "&sensor=true");
             return null;
         }
 

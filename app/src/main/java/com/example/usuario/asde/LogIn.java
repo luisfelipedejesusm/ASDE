@@ -97,13 +97,7 @@ public class LogIn extends AppCompatActivity{
 
         //Click en el textview registro que envia a la aqctividad registroBD
 
-        textViewRegistro.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(LogIn.this, registro.class);
-                startActivity(intent);
-            }
-        });
+
 
 
 
