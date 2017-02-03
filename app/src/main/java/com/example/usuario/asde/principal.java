@@ -226,9 +226,9 @@ public class principal extends AppCompatActivity implements GoogleApiClient.Conn
 
                 else if (imagen64 != null && mPath != null && Direccion != null){ // Validando datos generados a excepcion de Direccion
 
-                    evento = new Eventos(n,"",d,Latitud,Longitud,Direccion,imagen64,mPath,fechaFoto,fechaFotoGmt,"1");
+                    evento = new Eventos(n,d,Latitud,Longitud,Direccion,imagen64,mPath,fechaFoto,fechaFotoGmt,"1");
 
-                    listaEvento.add(new Eventos (n,"",d,Latitud,Longitud,Direccion,mPath,fechaFoto,fechaFotoGmt,"1"));
+                    listaEvento.add(evento);
 
                    // bandera = true;
 
