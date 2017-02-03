@@ -108,6 +108,7 @@ public class myEvents extends AppCompatActivity {
                                             Eventos evento = new Eventos();
                                             JSONObject obj = arrayJson.getJSONObject(i);
                                             evento.setDireccion(obj.getString("direccion"));
+
                                             evento.setPathFoto(getFileName(obj.getString("image_path")));
                                             evento.setHoraevento(obj.getString("timeCreated"));
                                             evento.setId(obj.getString("id"));

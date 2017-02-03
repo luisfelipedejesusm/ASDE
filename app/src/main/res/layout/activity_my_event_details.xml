@@ -96,14 +96,7 @@
                 android:orientation="horizontal"
                 android:layout_gravity="right"
                 android:padding="10dp">
-                <Button
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:padding="10dp"
 
-                    android:layout_gravity="right"
-                    android:text="Cambiar Estado"/>
                 <Button
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -111,6 +104,7 @@
                     android:layout_weight="1"
                     android:padding="10dp"
                     android:text="Cerrar Evento"
+                    android:background="@drawable/buttons"
                     android:onClick="cerrarEvento"/>
             </LinearLayout>
             <LinearLayout
@@ -132,7 +126,7 @@
                         android:layout_height="match_parent"
                         android:layout_centerHorizontal="true"
                         android:layout_centerVertical="true"
-                        android:src="@mipmap/camera"
+                        android:src="@mipmap/take_photo"
                         android:onClick="tomarFoto"
                         android:id="@+id/img_foto_cerrar"/>
                     <TextView
@@ -154,15 +148,18 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="right"
                         android:layout_weight="1"
+                        android:layout_margin="5dp"
                         android:padding="10dp"
+                        android:background="@drawable/buttons"
                         android:text="Cancelar"
                         />
                     <Button
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="2"
+                        android:layout_margin="5dp"
                         android:padding="10dp"
-
+                        android:background="@drawable/buttons"
                         android:layout_gravity="right"
                         android:text="Confirmar"
                         android:onClick="cerrarEventoConfirmar"/>

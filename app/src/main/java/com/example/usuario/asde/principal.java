@@ -425,10 +425,10 @@ String[] opciones = {
 
             bitmap = getBitmap(mPath);
 
-           // Glide.with(this).load(mPath).into(imgFoto);
-            imgFoto.setImageBitmap(bitmap);
+            Glide.with(this).load(mPath).into(imgFoto);
+           // imgFoto.setImageBitmap(bitmap);
        //     getStringImage(bit);
-         //   new ConvertStringImage().execute(bitmap);//Creacion y llamada a la tarea ConvertStringImage
+            new ConvertStringImage().execute(bitmap);//Creacion y llamada a la tarea ConvertStringImage
             getDireccion("http://maps.googleapis.com/maps/api/geocode/json?latlng=" + Latitud + ","+ Longitud + "&sensor=true");
 
         }
