@@ -50,7 +50,6 @@ import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.usuario.asde.auxiliares.Cadena;
 import com.example.usuario.asde.modelo.Eventos;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -126,7 +125,7 @@ public class principal extends AppCompatActivity implements GoogleApiClient.Conn
     String formatted_address;
 
     String Direccion; // Direccion cuando se obtiene de Geocoder
-    Cadena cadDireccion; // Direccion cuando se obtiene del Api de Google
+
 
     // API de GOOGLE para Obtener la Direccion
     String URL_API_GEOCODER = "http://maps.googleapis.com/maps/api/geocode/json?latlng=" + Latitud + ","+ Longitud + "&sensor=true";
@@ -183,16 +182,6 @@ public class principal extends AppCompatActivity implements GoogleApiClient.Conn
 
         }
 
-        editDireccion.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-        //        getDireccion("http://maps.googleapis.com/maps/api/geocode/json?latlng=" + Latitud + ","+ Longitud + "&sensor=true");
-        //        Toast.makeText(principal.this, "Pulse hasta obtener respuesta", Toast.LENGTH_SHORT).show();
-
-            }
-        });
-
 
 
         /****************Click para Obtener Foto (Aqui tambien debemos iniciar el servicio de localizacion o antes) *****************/
@@ -200,11 +189,7 @@ public class principal extends AppCompatActivity implements GoogleApiClient.Conn
         imgFoto.setOnClickListener(new View.OnClickListener() { /*Activar con el mismo boton de la CAMARA y Llamada para obtener latiud y longitud y por consiguiente Direccion */
             @Override
             public void onClick(View v) {
-
-                bandera = false;
                 openCamara();
-
-
             }
         });
 
@@ -374,8 +359,7 @@ String[] opciones = {
 
 
             Calendar c = Calendar.getInstance();
-
-            fechaFoto = df.format(c.getTime()).trim();
+            fechaFoto = df.format(c.getTime()).trim(); //Obtenemos fecha de la foto
 
             Date fechaDate = null;
             try {
@@ -386,7 +370,7 @@ String[] opciones = {
                 ex.printStackTrace();
             }
 
-            fechaFotoGmt = fechaDate.toString().trim();
+            fechaFotoGmt = fechaDate.toString().trim(); //Fecha en fromato GMT
 
 
             // Long timestamp = System.currentTimeMillis()/1000;
@@ -406,6 +390,7 @@ String[] opciones = {
         super.onActivityResult(requestCode, resultCode, data);
 
         if(resultCode == RESULT_OK && requestCode == PHOTO_CODE){
+            bandera = false;
 
             MediaScannerConnection.scanFile(this,
                     new String[]{mPath}, null,
@@ -430,7 +415,7 @@ String[] opciones = {
         }
     }
 
-    public Bitmap getBitmap(String path){
+    public Bitmap getBitmap(String path){//Funcion que maneja el tamano o resolucion de una imagen en un Bitmap y la acomoda hasta una dimension manejable en memoria
         Bitmap bitmap = null;
         BitmapFactory.Options options;
         try {
@@ -456,7 +441,8 @@ String[] opciones = {
 
     }
 
-    private class ConvertStringImage extends AsyncTask<Bitmap, Void, Void>{
+
+    private class ConvertStringImage extends AsyncTask<Bitmap, Void, Void>{ //Tarea asogcrona que convierte un Bitmap en un String64
 
         @Override
         protected Void doInBackground(Bitmap... params) {
@@ -524,8 +510,9 @@ String[] opciones = {
 
 
         } else {
-            Latitud = "-33.86881";
-            Longitud = "151.20929";
+            //Direccion por defecto si no encuentra una direccion por gps
+            Latitud = "18.459892";
+            Longitud = "-69.95942";
 
         }
     }
@@ -756,7 +743,7 @@ String[] opciones = {
 
                     requestQueue.add(stringRequest);
 
-                } catch (Exception e) {
+                    } catch (Exception e) {
                     dataRetrived();
                     AlertDialog.Builder builderDos = new AlertDialog.Builder(principal.this);
                     builderDos.setMessage("No se ha logrado enviar el evento, revise su conexión a internet")

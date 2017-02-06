@@ -1,6 +1,7 @@
 package com.example.usuario.asde;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -12,13 +13,13 @@ import android.location.LocationListener;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
@@ -56,6 +57,8 @@ import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -66,6 +69,8 @@ public class MyEventDetails extends AppCompatActivity implements GoogleApiClient
     private static final int PETICION_PERMISO_LOCALIZACION = 101;
     private static final String LOGTAG = "android-localizacion";
     Eventos c_evento;
+
+    ProgressDialog progressDialog;
 
     String Latitud;
     String Longitud;
@@ -80,6 +85,8 @@ public class MyEventDetails extends AppCompatActivity implements GoogleApiClient
     String mPath; // direccion de la imagen en el celular
     String fechaFoto;
 
+    ImageView imgfoto;
+
     public static final String UPDATE_EVENT = "http://199.89.55.4/ASDE/api/v1/operador/updatevent";
 
 
@@ -88,8 +95,12 @@ public class MyEventDetails extends AppCompatActivity implements GoogleApiClient
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_event_details);
 
+        imgfoto = (ImageView) findViewById(R.id.img_foto_cerrar);
+
         //get clicked event using its id
         getMyEvents();
+
+
 
         if (mGoogleApiClient == null) {
             mGoogleApiClient = new GoogleApiClient.Builder(this)
@@ -100,19 +111,33 @@ public class MyEventDetails extends AppCompatActivity implements GoogleApiClient
                     .build();
 
         }
+    } // Cierre de la Calse onCreate
+
+
+    private void sendingData(){
+        progressDialog = ProgressDialog.show(this,"","Cerrando Evento, Espere....", true);
+
     }
+    private void dataRetrived(){
+        progressDialog.dismiss();
+    }
+
+
 public void cerrar_evento_request(){
+try {
+    sendingData();
     RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+
 
     StringRequest stringRequest = new StringRequest(Request.Method.POST, UPDATE_EVENT,
             new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
 
-                    if(response != null){
-
+                    if (response != null) {
+                        dataRetrived();
                         Toast.makeText(MyEventDetails.this, "Evento Cerrado Exitosamente", Toast.LENGTH_SHORT).show();
-
+                        redirectToMenu();
                     }
 
 
@@ -121,17 +146,18 @@ public void cerrar_evento_request(){
             new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
+                    dataRetrived();
                     // Toast.makeText(principal.this, error.toString(), Toast.LENGTH_LONG).show();
                     if (error instanceof TimeoutError || error instanceof NoConnectionError) {
-                        Toast.makeText(MyEventDetails.this, "Tiempo para conexiÃ³n finalizado, revise su conexion a internet",Toast.LENGTH_LONG).show();
+                        Toast.makeText(MyEventDetails.this, "Tiempo para conexiÃ³n finalizado, revise su conexion a internet", Toast.LENGTH_LONG).show();
                     } else if (error instanceof AuthFailureError) {
-                        Toast.makeText(MyEventDetails.this, "Usuario o ContraseÃ±a Incorrecta, Revise nuevamente su informacion",Toast.LENGTH_LONG).show();
+                        Toast.makeText(MyEventDetails.this, "Usuario o ContraseÃ±a Incorrecta, Revise nuevamente su informacion", Toast.LENGTH_LONG).show();
                     } else if (error instanceof ServerError) {
-                        Toast.makeText(MyEventDetails.this, "Error en el servidor, Contactese con el suplidor de su aplicacion",Toast.LENGTH_LONG).show();
+                        Toast.makeText(MyEventDetails.this, "Error en el servidor, Contactese con el suplidor de su aplicacion", Toast.LENGTH_LONG).show();
                     } else if (error instanceof NetworkError) {
-                        Toast.makeText(MyEventDetails.this, "Error de coneccion. Revise el estado de su coneccion a internet",Toast.LENGTH_LONG).show();
+                        Toast.makeText(MyEventDetails.this, "Error de coneccion. Revise el estado de su coneccion a internet", Toast.LENGTH_LONG).show();
                     } else if (error instanceof ParseError) {
-                        Toast.makeText(MyEventDetails.this, "Problemas al ejecutar la aplicacion, Contactese con el suplidor de su aplicacion",Toast.LENGTH_LONG).show();
+                        Toast.makeText(MyEventDetails.this, "Problemas al ejecutar la aplicacion, Contactese con el suplidor de su aplicacion", Toast.LENGTH_LONG).show();
                     }
 
                 }
@@ -149,19 +175,36 @@ public void cerrar_evento_request(){
 
 
     requestQueue.add(stringRequest);
-    redirectToMenu();
+}catch (Exception e){
+
+   dataRetrived();
 }
+
+}
+
+
+
+
+
     private void redirectToMenu(){
+        onPause();
         Intent intent = new Intent(MyEventDetails.this,principal.class);
         startActivity(intent);
-        finish();
+       // finish();
     }
     public void cerrarEventoConfirmar(View view){
-        if (imagen64!=null ){
+        if (imagen64 != null){
             cerrar_evento_request();
         }else{
             Toast.makeText(this, "Debe tomar una foto antes de cerrar", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    public void cancelarCierre(View view){// Cancelamos la actividad y volvemos a principal (agregar un BuilderDialog)
+        onPause();
+        Intent i = new Intent(MyEventDetails.this,principal.class);
+        startActivity(i);
+
 
     }
 
@@ -178,7 +221,7 @@ public void cerrar_evento_request(){
                 scroll.fullScroll(ScrollView.FOCUS_DOWN);
             }
         });
-      //
+
     }
 
     private String getFileName(String path){
@@ -308,7 +351,7 @@ public void cerrar_evento_request(){
         if (distancia_metros<50){
             openCamara();
         }else{
-            Toast.makeText(this, "No haga trampa", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this,"Fuera de área", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -323,6 +366,11 @@ public void cerrar_evento_request(){
         }
 
         if(isDirectoryCreated){
+            SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
+            Calendar c = Calendar.getInstance();
+            fechaFoto = df.format(c.getTime()).trim(); //Obtenemos fecha de la foto
+
+
             String imagename = fechaFoto + ".png";
             mPath = Environment.getExternalStorageDirectory() + File.separator + MEDIA_DIRECTORY + File.separator + imagename;
 
@@ -350,42 +398,76 @@ public void cerrar_evento_request(){
                         }
                     });
 
-            Bitmap bitmap = BitmapFactory.decodeFile(mPath);
-            ImageView imgfoto = (ImageView) findViewById(R.id.img_foto_cerrar);
+            //Bitmap bitmap = BitmapFactory.decodeFile(mPath);
+
+            Toast.makeText(this, "Procesando Imagen", Toast.LENGTH_LONG).show();
+
+           Bitmap bitmap = getBitmap(mPath);
+
             imgfoto.setImageBitmap(bitmap);
 
-            Bitmap bit = BitmapFactory.decodeFile(mPath);
+           // Bitmap bit = BitmapFactory.decodeFile(mPath);
            // getStringImage(bit);
-            new ConvertStringImage().execute(bit);
+            new ConvertStringImage().execute(bitmap);
 
 
         }
     }
 
-    private class ConvertStringImage extends AsyncTask<Bitmap, Void, Void> {
+
+    public Bitmap getBitmap(String path){//Funcion que maneja el tamano o resolucion de una imagen en un Bitmap y la acomoda hasta una dimension manejable en memoria
+        Bitmap bitmap = null;
+        BitmapFactory.Options options;
+        try {
+            bitmap = BitmapFactory.decodeFile(path);
+            return bitmap;
+        } catch (OutOfMemoryError e) {
+            try {
+                options = new BitmapFactory.Options();
+                for (options.inSampleSize = 1;options.inSampleSize<=32; options.inSampleSize++){
+                    try{
+                        bitmap = BitmapFactory.decodeFile(path, options);
+                        break;
+                    }catch (OutOfMemoryError oom){
+                        bitmap = null;
+                    }
+                }
+            } catch(Exception ex) {
+                return null;
+            }
+        }
+       // Toast.makeText(this, bitmap.getWidth(), Toast.LENGTH_SHORT).show();
+        return bitmap;
+
+    }
+
+    private class ConvertStringImage extends AsyncTask<Bitmap, Void, Boolean> {//Tarea asogcrona que convierte un Bitmap en un String64
 
         @Override
-        protected Void doInBackground(Bitmap... params) {
+        protected Boolean doInBackground(Bitmap... params) {
             Bitmap bitmap = params[0];
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             bitmap.compress(Bitmap.CompressFormat.PNG,100,baos); //bm is the bitmap object the 10 is de quality 100 is the maximus
             byte[] b = baos.toByteArray();
             String aux = Base64.encodeToString(b, Base64.DEFAULT);
             imagen64 = aux;
-            return null;
+            return true;
         }
 
+        @Override
+        protected void onPostExecute(Boolean aVoid) {
+            super.onPostExecute(aVoid);
+
+            if(aVoid){
+                Toast.makeText(MyEventDetails.this, "Confirme el Cierre", Toast.LENGTH_SHORT).show();
+            }
+
+
+        }
+
+
     }
-   /* public void getStringImage(Bitmap bitmap){
-        //Convertimos la imagen en String64
 
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG,100,baos); //bm is the bitmap object the 10 is de quality 100 is the maximus
-        byte[] b = baos.toByteArray();
-        String aux = Base64.encodeToString(b, Base64.DEFAULT);
-        imagen64 = aux;
-
-    }*/
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
@@ -412,8 +494,8 @@ public void cerrar_evento_request(){
 
 
         } else {
-            Latitud = "-33.86881";
-            Longitud = "151.20929";
+            Latitud = "18.459892";
+            Longitud = "-69.95942";
 
         }
     }

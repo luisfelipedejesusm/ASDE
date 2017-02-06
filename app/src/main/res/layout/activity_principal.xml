@@ -84,13 +84,13 @@
         android:layout_height="wrap_content">
 
         <EditText
-            android:hint="Dirección (Pulse para obtener direccion)"
+            android:hint="Dirección"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="100dp"
             android:id="@+id/editDireccion"
             android:inputType="text|textAutoComplete"
-            tools:text="Dirección:"
+            tools:text="Dirección"
             />
 
     </android.support.design.widget.TextInputLayout>
