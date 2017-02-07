@@ -737,7 +737,23 @@ String[] opciones = {
                                     if(response != null){
 
                                         dataRetrived();
-                                        Toast.makeText(principal.this, "Evento Registrado Exitosamente", Toast.LENGTH_SHORT).show();
+                                        try{
+                                            ArrayList<Eventos> eventos = new ArrayList<Eventos>();
+                                            JSONObject j = new JSONObject(response);
+                                            JSONArray arrayJson = j.getJSONArray("posts");
+                                            JSONObject obj = arrayJson.getJSONObject(0);
+                                            if (obj.getString("id").equals("Duplicate")){
+                                                Toast.makeText(principal.this, "Este Evento Ya Ha Sido Reportado", Toast.LENGTH_SHORT).show();
+
+                                            }
+                                            else
+                                            {
+                                                Toast.makeText(principal.this, "Evento Registrado Exitosamente", Toast.LENGTH_SHORT).show();
+
+                                            }
+                                        }catch(Exception e){
+
+                                        }
 
                                     }
 
