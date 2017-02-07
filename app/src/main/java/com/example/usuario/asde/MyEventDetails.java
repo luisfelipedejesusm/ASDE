@@ -86,6 +86,7 @@ public class MyEventDetails extends AppCompatActivity implements GoogleApiClient
     String fechaFoto;
 
     ImageView imgfoto;//Imagen foto de cierre del evento
+
     TextView textFotoCierre; //Aqui se colocara la fecha de captura de la foto de cierre
 
 
@@ -99,6 +100,7 @@ public class MyEventDetails extends AppCompatActivity implements GoogleApiClient
 
         imgfoto = (ImageView) findViewById(R.id.img_foto_cerrar);
         textFotoCierre = (TextView) findViewById(R.id.textFechaFotoCierre);
+
 
         //get clicked event using its id
         getMyEvents();
@@ -369,10 +371,13 @@ try {
         }
 
         if(isDirectoryCreated){
-            SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
+            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             Calendar c = Calendar.getInstance();
             fechaFoto = df.format(c.getTime()).trim(); //Obtenemos fecha de la foto
+
+
             textFotoCierre.setText(fechaFoto);
+
 
             String imagename = fechaFoto + ".png";
             mPath = Environment.getExternalStorageDirectory() + File.separator + MEDIA_DIRECTORY + File.separator + imagename;
@@ -423,7 +428,7 @@ try {
         BitmapFactory.Options options;
         try {
             bitmap = BitmapFactory.decodeFile(path);
-            return bitmap;
+            return resizePhoto(bitmap,350,true);
         } catch (OutOfMemoryError e) {
             try {
                 options = new BitmapFactory.Options();
@@ -440,9 +445,33 @@ try {
             }
         }
        // Toast.makeText(this, bitmap.getWidth(), Toast.LENGTH_SHORT).show();
-        return bitmap;
+        return resizePhoto(bitmap,350,true);
 
     }
+
+
+    /**
+     * This method resize the photo
+     *
+     * @param realImage    the bitmap of image
+     * @param maxImageSize the max image size percentage
+     * @param filter       the filter
+     * @return a bitmap of the photo rezise
+     */
+    public static Bitmap resizePhoto(Bitmap realImage, float maxImageSize, boolean filter) {
+        float ratio = Math.min(
+                (float) maxImageSize / realImage.getWidth(),
+                (float) maxImageSize / realImage.getHeight());
+        int width = Math.round((float) ratio * realImage.getWidth());
+        int height = Math.round((float) ratio * realImage.getHeight());
+
+        Bitmap newBitmap = Bitmap.createScaledBitmap(realImage, width,
+                height, filter);
+        return newBitmap;
+    }
+
+
+
 
     private class ConvertStringImage extends AsyncTask<Bitmap, Void, Boolean> {//Tarea asogcrona que convierte un Bitmap en un String64
 

@@ -206,11 +206,8 @@ public class principal extends AppCompatActivity implements GoogleApiClient.Conn
         imgFoto.setOnClickListener(new View.OnClickListener() { /*Activar con el mismo boton de la CAMARA y Llamada para obtener latiud y longitud y por consiguiente Direccion */
             @Override
             public void onClick(View v) {
-
                 bandera = false;
                 openCamara();
-
-
             }
         });
 
@@ -258,7 +255,7 @@ String[] opciones = {
         "Publicidad",
         "Basura",
         "Iluminacion",
-        "Reparacicon"
+        "Reparación"
 };
 
         Spinner spiner = (Spinner) findViewById(R.id.spinner_evento);
@@ -269,9 +266,6 @@ String[] opciones = {
 
         //ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this).build();
        // ImageLoader.getInstance().init(config);
-
-
-
 
     } // Cierre de la funcion onCreate
 
@@ -430,7 +424,8 @@ String[] opciones = {
             Glide.with(this).load(mPath).into(imgFoto);
            // imgFoto.setImageBitmap(bitmap);
        //     getStringImage(bit);
-            if (bitmap!=null){
+
+            if (bitmap!= null){
                 btnEnviar.setEnabled(false);
                 btnEnviar.setText("");
                 progressBar.setVisibility(View.VISIBLE);
@@ -448,7 +443,7 @@ String[] opciones = {
         BitmapFactory.Options options;
         try {
             bitmap = BitmapFactory.decodeFile(path);
-            return bitmap;
+            return resizePhoto(bitmap,350,true);//Aqui se agrego la funcion resizePhoto
         } catch (OutOfMemoryError e) {
             try {
                 options = new BitmapFactory.Options();
@@ -465,9 +460,35 @@ String[] opciones = {
             }
         }
         Toast.makeText(this, bitmap.getWidth(), Toast.LENGTH_SHORT).show();
-        return bitmap;
+
+
+        return resizePhoto(bitmap,350,true);
 
     }
+
+    /**
+     * This method resize the photo
+     *
+     * @param realImage    the bitmap of image
+     * @param maxImageSize the max image size percentage
+     * @param filter       the filter
+     * @return a bitmap of the photo rezise
+     */
+    public static Bitmap resizePhoto(Bitmap realImage, float maxImageSize, boolean filter) {
+        float ratio = Math.min(
+                (float) maxImageSize / realImage.getWidth(),
+                (float) maxImageSize / realImage.getHeight());
+        int width = Math.round((float) ratio * realImage.getWidth());
+        int height = Math.round((float) ratio * realImage.getHeight());
+
+        Bitmap newBitmap = Bitmap.createScaledBitmap(realImage, width,
+                height, filter);
+        return newBitmap;
+    }
+
+
+
+
 
     private class ConvertStringImage extends AsyncTask<Bitmap, Void, Void>{
 
@@ -490,21 +511,6 @@ String[] opciones = {
         }
 
     }
-
-    /*public void getStringImage(Bitmap bitmap){
-        //Convertimos la imagen en String64
-
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG,100,baos); //bm is the bitmap object the 10 is de quality 100 is the maximus
-        byte[] b = baos.toByteArray();
-        String aux = Base64.encodeToString(b, Base64.DEFAULT);
-        imagen64 = aux;
-        getDireccion("http://maps.googleapis.com/maps/api/geocode/json?latlng=" + Latitud + ","+ Longitud + "&sensor=true");
-
-
-    }*/
-
-
 
 
 
@@ -544,8 +550,8 @@ String[] opciones = {
 
 
         } else {
-            Latitud = "-33.86881";
-            Longitud = "151.20929";
+            Latitud = "18.459892";
+            Longitud = "-69.95942";
 
         }
     }
