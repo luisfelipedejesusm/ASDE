@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Asde</string>
+    <string name="app_name">Ayuntamiento Santo Domingo Este</string>
     <string-array name="spinner_evento">
         <item>Escombros</item>
         <item>Publicidad</item>

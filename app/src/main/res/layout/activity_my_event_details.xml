@@ -141,6 +141,7 @@
                         android:layout_centerHorizontal="true"
                         android:layout_alignParentBottom="true"
                         android:paddingBottom="10dp"
+                        android:id="@+id/textFechaFotoCierre"
                         android:text="Fecha del Evento"/>
                 </RelativeLayout>
                 <LinearLayout

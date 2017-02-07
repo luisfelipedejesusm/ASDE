@@ -24,6 +24,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
@@ -157,6 +158,7 @@ public class principal extends AppCompatActivity implements GoogleApiClient.Conn
 
         //validate if user is already logged in, if not, redirect to LogIn page
         checkForUsers();
+
 
 
         btnEnviar = (Button)findViewById(R.id.buttonEnviar);
