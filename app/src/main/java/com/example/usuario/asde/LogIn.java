@@ -175,15 +175,15 @@ public class LogIn extends AppCompatActivity{
                                 public void onErrorResponse(VolleyError error) {
                                     //Toast.makeText(login.this, error.toString(), Toast.LENGTH_LONG).show();
                                     if (error instanceof TimeoutError || error instanceof NoConnectionError) {
-                                        Toast.makeText(LogIn.this, "Tiempo para conexiÃ³n finalizado, revise su conexion a internet",Toast.LENGTH_LONG).show();
+                                        Toast.makeText(LogIn.this, "Tiempo para conexión finalizado, revise su conexión a internet",Toast.LENGTH_LONG).show();
                                     } else if (error instanceof AuthFailureError) {
-                                        Toast.makeText(LogIn.this, "Usuario o ContraseÃ±a Incorrecta, Revise nuevamente su informacion",Toast.LENGTH_LONG).show();
+                                        Toast.makeText(LogIn.this, "Usuario o Contraseña Incorrecta, Revise nuevamente su información",Toast.LENGTH_LONG).show();
                                     } else if (error instanceof ServerError) {
-                                        Toast.makeText(LogIn.this, "Error en el servidor, Contactese con el suplidor de su aplicacion",Toast.LENGTH_LONG).show();
+                                        Toast.makeText(LogIn.this, "Error en el servidor, Contacte con el suplidor de su aplicación",Toast.LENGTH_LONG).show();
                                     } else if (error instanceof NetworkError) {
-                                        Toast.makeText(LogIn.this, "Error de coneccion. Revise el estado de su coneccion a internet",Toast.LENGTH_LONG).show();
+                                        Toast.makeText(LogIn.this, "Error de conexión. Revise el estado de su conexión a internet",Toast.LENGTH_LONG).show();
                                     } else if (error instanceof ParseError) {
-                                        Toast.makeText(LogIn.this, "Problemas al ejecutar la aplicacion, Contactese con el suplidor de su aplicacion",Toast.LENGTH_LONG).show();
+                                        Toast.makeText(LogIn.this, "Problemas al ejecutar la aplicación, Contacte con el suplidor de su aplicación",Toast.LENGTH_LONG).show();
                                     }
 
                                 }

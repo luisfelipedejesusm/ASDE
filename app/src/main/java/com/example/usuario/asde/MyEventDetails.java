@@ -23,6 +23,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -89,6 +90,8 @@ public class MyEventDetails extends AppCompatActivity implements GoogleApiClient
 
     TextView textFotoCierre; //Aqui se colocara la fecha de captura de la foto de cierre
 
+    Button btnConfirmarCierre;
+
 
     public static final String UPDATE_EVENT = "http://199.89.55.4/ASDE/api/v1/operador/updatevent";
 
@@ -100,6 +103,8 @@ public class MyEventDetails extends AppCompatActivity implements GoogleApiClient
 
         imgfoto = (ImageView) findViewById(R.id.img_foto_cerrar);
         textFotoCierre = (TextView) findViewById(R.id.textFechaFotoCierre);
+        btnConfirmarCierre = (Button)findViewById(R.id.btnConfirmar);
+        btnConfirmarCierre.setEnabled(false);
 
 
         //get clicked event using its id
@@ -154,15 +159,15 @@ try {
                     dataRetrived();
                     // Toast.makeText(principal.this, error.toString(), Toast.LENGTH_LONG).show();
                     if (error instanceof TimeoutError || error instanceof NoConnectionError) {
-                        Toast.makeText(MyEventDetails.this, "Tiempo para conexiÃ³n finalizado, revise su conexion a internet", Toast.LENGTH_LONG).show();
+                        Toast.makeText(MyEventDetails.this, "Tiempo para conexión finalizado, revise su conexión a internet", Toast.LENGTH_LONG).show();
                     } else if (error instanceof AuthFailureError) {
-                        Toast.makeText(MyEventDetails.this, "Usuario o ContraseÃ±a Incorrecta, Revise nuevamente su informacion", Toast.LENGTH_LONG).show();
+                        Toast.makeText(MyEventDetails.this, "Usuario o Contraseña Incorrecta, Revise nuevamente su información", Toast.LENGTH_LONG).show();
                     } else if (error instanceof ServerError) {
-                        Toast.makeText(MyEventDetails.this, "Error en el servidor, Contactese con el suplidor de su aplicacion", Toast.LENGTH_LONG).show();
+                        Toast.makeText(MyEventDetails.this, "Error en el servidor, Contacte con el suplidor de su aplicación", Toast.LENGTH_LONG).show();
                     } else if (error instanceof NetworkError) {
-                        Toast.makeText(MyEventDetails.this, "Error de coneccion. Revise el estado de su coneccion a internet", Toast.LENGTH_LONG).show();
+                        Toast.makeText(MyEventDetails.this, "Error de conexión. Revise el estado de su conexión a internet", Toast.LENGTH_LONG).show();
                     } else if (error instanceof ParseError) {
-                        Toast.makeText(MyEventDetails.this, "Problemas al ejecutar la aplicacion, Contactese con el suplidor de su aplicacion", Toast.LENGTH_LONG).show();
+                        Toast.makeText(MyEventDetails.this, "Problemas al ejecutar la aplicación, Contacte con el suplidor de su aplicación", Toast.LENGTH_LONG).show();
                     }
 
                 }
@@ -195,13 +200,12 @@ try {
         onPause();
         Intent intent = new Intent(MyEventDetails.this,principal.class);
         startActivity(intent);
-       // finish();
+        finish();
     }
-    public void cerrarEventoConfirmar(View view){
+
+    public void cerrarEventoConfirmar(View view){ //Confirmar el Cierre del Evento una vez se tiene la imagen64
         if (imagen64 != null){
             cerrar_evento_request();
-        }else{
-            Toast.makeText(this, "Debe tomar una foto antes de cerrar", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -209,6 +213,7 @@ try {
         onPause();
         Intent i = new Intent(MyEventDetails.this,principal.class);
         startActivity(i);
+        finish();
 
 
     }
@@ -467,6 +472,7 @@ try {
 
         Bitmap newBitmap = Bitmap.createScaledBitmap(realImage, width,
                 height, filter);
+
         return newBitmap;
     }
 
@@ -487,16 +493,14 @@ try {
         }
 
         @Override
-        protected void onPostExecute(Boolean aVoid) {
-            super.onPostExecute(aVoid);
+        protected void onPostExecute(Boolean V) {
+            super.onPostExecute(V);
 
-            if(aVoid){
+            if(V){
                 Toast.makeText(MyEventDetails.this, "Confirme el Cierre", Toast.LENGTH_SHORT).show();
+                btnConfirmarCierre.setEnabled(true);
             }
-
-
         }
-
 
     }
 

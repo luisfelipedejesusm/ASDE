@@ -156,9 +156,10 @@
                         android:onClick="cancelarCierre"
                         />
                     <Button
+                        android:id="@+id/btnConfirmar"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="2"
+                        android:layout_weight="1"
                         android:padding="10dp"
                         android:layout_gravity="right"
                         android:text="Confirmar"
