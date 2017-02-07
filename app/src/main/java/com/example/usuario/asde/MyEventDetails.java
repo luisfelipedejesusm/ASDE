@@ -445,7 +445,7 @@ try {
         BitmapFactory.Options options;
         try {
             bitmap = BitmapFactory.decodeFile(path);
-            return resizePhoto(bitmap,350,true);
+            return resizePhoto(bitmap,500,true);
         } catch (OutOfMemoryError e) {
             try {
                 options = new BitmapFactory.Options();
@@ -462,7 +462,7 @@ try {
             }
         }
        // Toast.makeText(this, bitmap.getWidth(), Toast.LENGTH_SHORT).show();
-        return resizePhoto(bitmap,350,true);
+        return resizePhoto(bitmap,500,true);
 
     }
 

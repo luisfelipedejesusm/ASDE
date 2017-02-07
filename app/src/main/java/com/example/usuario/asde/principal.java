@@ -24,7 +24,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
@@ -53,7 +52,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
-import com.example.usuario.asde.auxiliares.Cadena;
 import com.example.usuario.asde.modelo.Eventos;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -83,7 +81,7 @@ public class principal extends AppCompatActivity implements GoogleApiClient.Conn
     /********Entradas de la Interfaz de la Clase Principal.java***********/
 
     Button btnEnviar;   // Enviar evento primera vez a webservice
-    Button btnRegistro; //
+
 
     ImageView imgFoto;
     EditText editNombre;
@@ -130,7 +128,7 @@ public class principal extends AppCompatActivity implements GoogleApiClient.Conn
     String formatted_address;
 
     String Direccion; // Direccion cuando se obtiene de Geocoder
-    Cadena cadDireccion; // Direccion cuando se obtiene del Api de Google
+
 
     // API de GOOGLE para Obtener la Direccion
     String URL_API_GEOCODER = "http://maps.googleapis.com/maps/api/geocode/json?latlng=" + Latitud + ","+ Longitud + "&sensor=true";
@@ -189,15 +187,12 @@ public class principal extends AppCompatActivity implements GoogleApiClient.Conn
 
         }
 
-        editDireccion.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        if(myRequestStoragePermission()){
+            imgFoto.setClickable(true);
+        }else{
+            imgFoto.setClickable(false);
+        }
 
-        //        getDireccion("http://maps.googleapis.com/maps/api/geocode/json?latlng=" + Latitud + ","+ Longitud + "&sensor=true");
-        //        Toast.makeText(principal.this, "Pulse hasta obtener respuesta", Toast.LENGTH_SHORT).show();
-
-            }
-        });
 
 
 
@@ -254,7 +249,7 @@ String[] opciones = {
         "Escombros",
         "Publicidad",
         "Basura",
-        "Iluminacion",
+        "Iluminación",
         "Reparación"
 };
 
@@ -354,8 +349,9 @@ String[] opciones = {
 
       private boolean myRequestStoragePermission(){
 
-          return  false;
 
+
+          return false;
       }
 
 
@@ -443,7 +439,7 @@ String[] opciones = {
         BitmapFactory.Options options;
         try {
             bitmap = BitmapFactory.decodeFile(path);
-            return resizePhoto(bitmap,350,true);//Aqui se agrego la funcion resizePhoto
+            return resizePhoto(bitmap,500,true);//Aqui se agrego la funcion resizePhoto
         } catch (OutOfMemoryError e) {
             try {
                 options = new BitmapFactory.Options();
@@ -462,7 +458,7 @@ String[] opciones = {
         Toast.makeText(this, bitmap.getWidth(), Toast.LENGTH_SHORT).show();
 
 
-        return resizePhoto(bitmap,350,true);
+        return resizePhoto(bitmap,500,true);
 
     }
 
@@ -518,11 +514,12 @@ String[] opciones = {
     public void alertaGPS(){
 
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage("El sistema GPS esta desactivado, desea activarlo para obtener la dirección exacta? ")
+        builder.setMessage("El sistema GPS esta desactivado, la aplicación requiere su activación para obtener la dirección exacta, desea activarlo? ")
                 .setCancelable(false)
                 .setPositiveButton("Si",new DialogInterface.OnClickListener(){
                     public void onClick(@SuppressWarnings("unused") final DialogInterface dialog,@SuppressWarnings("unused")final int id){
                         startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));//Este Intent abre la ventana para encender el GPS
+                        onStart(); // Agregue esta linea para probar si el GPS entra en funcionamiento inmediatamente despues de encenderlo es necesario realizar mas pruebas
                     }
                 })
                 .setNegativeButton("No",new DialogInterface.OnClickListener(){
@@ -540,6 +537,13 @@ String[] opciones = {
         mGoogleApiClient.disconnect();
         super.onStop();
     }
+
+    protected void onStart(){
+        mGoogleApiClient.connect();
+        super.onStart();
+    }
+
+
 
 
 
@@ -791,12 +795,7 @@ String[] opciones = {
                             .show();
                 }
 
-
-
-
-
     }
-
 
 }
 
