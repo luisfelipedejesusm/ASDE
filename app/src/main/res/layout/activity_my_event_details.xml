@@ -101,6 +101,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:padding="10dp"
+
                     android:layout_gravity="right"
                     android:text="Cambiar Estado"/>
                 <Button
@@ -111,7 +112,6 @@
                     android:padding="10dp"
                     android:text="Cerrar Evento"
                     android:onClick="cerrarEvento"/>
-
             </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
@@ -136,7 +136,6 @@
                         android:onClick="tomarFoto"
                         android:id="@+id/img_foto_cerrar"/>
                     <TextView
-                        android:id="@+id/textFechaFotoCierre"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerHorizontal="true"
@@ -150,7 +149,6 @@
                     android:orientation="horizontal"
                     android:layout_gravity="right"
                     android:padding="10dp">
-
                     <Button
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -158,13 +156,11 @@
                         android:layout_weight="1"
                         android:padding="10dp"
                         android:text="Cancelar"
-                        android:onClick="cancelarCierre"  />
-
-
+                        />
                     <Button
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
+                        android:layout_weight="2"
                         android:padding="10dp"
 
                         android:layout_gravity="right"
