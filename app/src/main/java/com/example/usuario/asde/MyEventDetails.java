@@ -86,6 +86,7 @@ public class MyEventDetails extends AppCompatActivity implements GoogleApiClient
     String fechaFoto;
 
     ImageView imgfoto;//Imagen foto de cierre del evento
+
     TextView textFotoCierre; //Aqui se colocara la fecha de captura de la foto de cierre
 
 
@@ -99,6 +100,7 @@ public class MyEventDetails extends AppCompatActivity implements GoogleApiClient
 
         imgfoto = (ImageView) findViewById(R.id.img_foto_cerrar);
         textFotoCierre = (TextView) findViewById(R.id.textFechaFotoCierre);
+
 
         //get clicked event using its id
         getMyEvents();
@@ -369,10 +371,13 @@ try {
         }
 
         if(isDirectoryCreated){
-            SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
+            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             Calendar c = Calendar.getInstance();
             fechaFoto = df.format(c.getTime()).trim(); //Obtenemos fecha de la foto
+
+
             textFotoCierre.setText(fechaFoto);
+
 
             String imagename = fechaFoto + ".png";
             mPath = Environment.getExternalStorageDirectory() + File.separator + MEDIA_DIRECTORY + File.separator + imagename;

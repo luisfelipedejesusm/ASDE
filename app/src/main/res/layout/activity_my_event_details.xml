@@ -136,6 +136,7 @@
                         android:onClick="tomarFoto"
                         android:id="@+id/img_foto_cerrar"/>
                     <TextView
+                        android:id="@+id/textFechaFotoCierre"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerHorizontal="true"
@@ -150,19 +151,20 @@
                     android:layout_gravity="right"
                     android:padding="10dp">
                     <Button
+                        android:id="@+id/btnCancelar"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="right"
                         android:layout_weight="1"
                         android:padding="10dp"
                         android:text="Cancelar"
+                        android:onClick="cancelarCierre"
                         />
                     <Button
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="2"
                         android:padding="10dp"
-
                         android:layout_gravity="right"
                         android:text="Confirmar"
                         android:onClick="cerrarEventoConfirmar"/>

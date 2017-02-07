@@ -200,11 +200,8 @@ public class principal extends AppCompatActivity implements GoogleApiClient.Conn
         imgFoto.setOnClickListener(new View.OnClickListener() { /*Activar con el mismo boton de la CAMARA y Llamada para obtener latiud y longitud y por consiguiente Direccion */
             @Override
             public void onClick(View v) {
-
                 bandera = false;
                 openCamara();
-
-
             }
         });
 
@@ -263,9 +260,6 @@ String[] opciones = {
 
         //ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this).build();
        // ImageLoader.getInstance().init(config);
-
-
-
 
     } // Cierre de la funcion onCreate
 
@@ -471,18 +465,7 @@ String[] opciones = {
 
     }
 
-    /*public void getStringImage(Bitmap bitmap){
-        //Convertimos la imagen en String64
 
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG,100,baos); //bm is the bitmap object the 10 is de quality 100 is the maximus
-        byte[] b = baos.toByteArray();
-        String aux = Base64.encodeToString(b, Base64.DEFAULT);
-        imagen64 = aux;
-        getDireccion("http://maps.googleapis.com/maps/api/geocode/json?latlng=" + Latitud + ","+ Longitud + "&sensor=true");
-
-
-    }*/
 
 
 
@@ -524,8 +507,8 @@ String[] opciones = {
 
 
         } else {
-            Latitud = "-33.86881";
-            Longitud = "151.20929";
+            Latitud = "18.459892";
+            Longitud = "-69.95942";
 
         }
     }
