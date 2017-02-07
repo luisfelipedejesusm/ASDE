@@ -35,6 +35,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -50,6 +51,7 @@ import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.bumptech.glide.Glide;
 import com.example.usuario.asde.auxiliares.Cadena;
 import com.example.usuario.asde.modelo.Eventos;
 import com.google.android.gms.common.ConnectionResult;
@@ -104,6 +106,7 @@ public class principal extends AppCompatActivity implements GoogleApiClient.Conn
     String fechaFoto, fechaFotoGmt;
 
     boolean bandera = true;
+    ProgressBar progressBar;
 
 
 
@@ -157,6 +160,7 @@ public class principal extends AppCompatActivity implements GoogleApiClient.Conn
 
 
         btnEnviar = (Button)findViewById(R.id.buttonEnviar);
+        progressBar = (ProgressBar) findViewById(R.id.progressBar);
 
         imgFoto = (ImageView)findViewById(R.id.imageFoto);
         editNombre = (EditText)findViewById(R.id.editNombre);
@@ -415,10 +419,17 @@ String[] opciones = {
 
             bitmap = getBitmap(mPath);
 
-           // Glide.with(this).load(mPath).into(imgFoto);
-            imgFoto.setImageBitmap(bitmap);
+            Glide.with(this).load(mPath).into(imgFoto);
+           // imgFoto.setImageBitmap(bitmap);
        //     getStringImage(bit);
-            new ConvertStringImage().execute(bitmap);//Creacion y llamada a la tarea ConvertStringImage
+            if (bitmap!=null){
+                btnEnviar.setEnabled(false);
+                btnEnviar.setText("");
+                progressBar.setVisibility(View.VISIBLE);
+                new ConvertStringImage().execute(bitmap);//Creacion y llamada a la tarea ConvertStringImage
+            }else{
+                Toast.makeText(this, "Error en la creacion del bitmap. Debe tomar la foto a baja resolucion.", Toast.LENGTH_SHORT).show();
+            }
             getDireccion("http://maps.googleapis.com/maps/api/geocode/json?latlng=" + Latitud + ","+ Longitud + "&sensor=true");
 
         }
@@ -461,6 +472,13 @@ String[] opciones = {
             String aux = Base64.encodeToString(b, Base64.DEFAULT);
             imagen64 = aux;
             return null;
+        }
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            btnEnviar.setEnabled(true);
+            btnEnviar.setText("Enviar");
+            progressBar.setVisibility(View.GONE);
+
         }
 
     }
