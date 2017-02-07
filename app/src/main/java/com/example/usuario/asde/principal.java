@@ -35,6 +35,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -50,6 +51,7 @@ import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.bumptech.glide.Glide;
 import com.example.usuario.asde.auxiliares.Cadena;
 import com.example.usuario.asde.modelo.Eventos;
 import com.google.android.gms.common.ConnectionResult;
@@ -81,6 +83,7 @@ public class principal extends AppCompatActivity implements GoogleApiClient.Conn
 
     Button btnEnviar;   // Enviar evento primera vez a webservice
     Button btnRegistro; //
+    ProgressBar progressBar;
 
     ImageView imgFoto;
     EditText editNombre;
@@ -157,6 +160,7 @@ public class principal extends AppCompatActivity implements GoogleApiClient.Conn
 
 
         btnEnviar = (Button)findViewById(R.id.buttonEnviar);
+        progressBar = (ProgressBar) findViewById(R.id.progressBar);
 
         imgFoto = (ImageView)findViewById(R.id.imageFoto);
         editNombre = (EditText)findViewById(R.id.editNombre);
@@ -201,7 +205,7 @@ public class principal extends AppCompatActivity implements GoogleApiClient.Conn
             @Override
             public void onClick(View v) {
 
-                bandera = false;
+
                 openCamara();
 
 
@@ -231,7 +235,7 @@ public class principal extends AppCompatActivity implements GoogleApiClient.Conn
 
                     listaEvento.add(evento);
 
-                    bandera = true;
+
 
                     envioEvento(); //Envio del evento al WebService
                 }
@@ -406,7 +410,7 @@ String[] opciones = {
         super.onActivityResult(requestCode, resultCode, data);
 
         if(resultCode == RESULT_OK && requestCode == PHOTO_CODE){
-
+            bandera = false;//se actualiza para evitar que se envie la misma foto
             MediaScannerConnection.scanFile(this,
                     new String[]{mPath}, null,
                     new MediaScannerConnection.OnScanCompletedListener() {
@@ -424,7 +428,14 @@ String[] opciones = {
             Glide.with(this).load(mPath).into(imgFoto);
            // imgFoto.setImageBitmap(bitmap);
        //     getStringImage(bit);
-            new ConvertStringImage().execute(bitmap);//Creacion y llamada a la tarea ConvertStringImage
+            if (bitmap!=null){
+                btnEnviar.setEnabled(false);
+                btnEnviar.setText("");
+                progressBar.setVisibility(View.VISIBLE);
+                new ConvertStringImage().execute(bitmap);//Creacion y llamada a la tarea ConvertStringImage
+            }else{
+                Toast.makeText(this, "Error en la creacion del bitmap. Debe tomar la foto a baja resolucion.", Toast.LENGTH_SHORT).show();
+            }
             getDireccion("http://maps.googleapis.com/maps/api/geocode/json?latlng=" + Latitud + ","+ Longitud + "&sensor=true");
 
         }
@@ -469,6 +480,13 @@ String[] opciones = {
             return null;
         }
 
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            btnEnviar.setEnabled(true);
+            btnEnviar.setText("Enviar");
+            progressBar.setVisibility(View.GONE);
+
+        }
     }
 
     /*public void getStringImage(Bitmap bitmap){
@@ -705,7 +723,7 @@ String[] opciones = {
                                 public void onResponse(String response) {
 
                                     if(response != null){
-
+                                        bandera = true;
                                         dataRetrived();
                                         Toast.makeText(principal.this, "Evento Registrado Exitosamente", Toast.LENGTH_SHORT).show();
 
