@@ -308,6 +308,18 @@ try {
 
 
     }
+
+    public void showFullImage(View view){
+        ImageView imgEvento = (ImageView) findViewById(R.id.foto_evento);
+        imgEvento.buildDrawingCache();
+        Bitmap bitmap = imgEvento.getDrawingCache();
+
+        Intent intent = new Intent(this,ShowFoto.class);
+        intent.putExtra("imgBitmap", bitmap);
+        startActivity(intent);
+
+    }
+
 //here we take the eent from the other thread and update the textviews in the activity
     private void updateInfo(Eventos evento) {
         c_evento = evento;

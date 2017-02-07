@@ -2,17 +2,15 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.usuario.asde">
 
-
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-
-
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.CAMERA"/>
-    <protected-broadcast android:name="android.intent.action.MEDIA_MOUNTED"/>
+    <uses-permission android:name="android.permission.CAMERA" />
+
+    <protected-broadcast android:name="android.intent.action.MEDIA_MOUNTED" />
 
     <application
         android:allowBackup="true"
@@ -20,18 +18,31 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".principal" android:screenOrientation="portrait">
+        <activity
+            android:name=".principal"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".registro" android:screenOrientation="portrait" />
-        <activity android:name=".LogIn" android:screenOrientation="portrait" />
-        <activity android:name=".lista_eventos_registrados" android:screenOrientation="portrait" />
-        <activity android:name=".myEvents" android:screenOrientation="portrait" />
-        <activity android:name=".MyEventDetails" android:screenOrientation="portrait"></activity>
+        <activity
+            android:name=".registro"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".LogIn"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".lista_eventos_registrados"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".myEvents"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".MyEventDetails"
+            android:screenOrientation="portrait" />
+        <activity android:name=".ShowFoto"></activity>
     </application>
 
 </manifest>

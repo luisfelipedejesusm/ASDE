@@ -33,7 +33,8 @@
                     android:layout_height="160dp"
                     android:layout_alignParentTop="true"
                     android:layout_centerHorizontal="true"
-                    android:id="@+id/foto_evento"/>
+                    android:id="@+id/foto_evento"
+                    android:onClick="showFullImage"/>
                 <ProgressBar
                     android:id="@+id/progress_bar_my_event_detail"
                     android:layout_width="match_parent"
@@ -126,7 +127,7 @@
                         android:layout_height="match_parent"
                         android:layout_centerHorizontal="true"
                         android:layout_centerVertical="true"
-                        android:src="@mipmap/camera"
+                        android:src="@mipmap/take_photo"
                         android:onClick="tomarFoto"
                         android:id="@+id/img_foto_cerrar"/>
                     <TextView
@@ -136,7 +137,6 @@
                         android:layout_centerHorizontal="true"
                         android:layout_alignParentBottom="true"
                         android:paddingBottom="10dp"
-                        android:id="@+id/textFechaFotoCierre"
                         android:text="Fecha del Evento"/>
                 </RelativeLayout>
                 <LinearLayout
@@ -146,24 +146,24 @@
                     android:layout_gravity="right"
                     android:padding="10dp">
                     <Button
-                        android:id="@+id/btnCancelar"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="right"
                         android:layout_weight="1"
+                        android:layout_margin="5dp"
                         android:padding="10dp"
-                        android:text="Cancelar"
                         android:background="@drawable/buttons"
-                        android:onClick="cancelarCierre"
+                        android:text="Cancelar"
                         />
                     <Button
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="2"
+                        android:layout_margin="5dp"
                         android:padding="10dp"
+                        android:background="@drawable/buttons"
                         android:layout_gravity="right"
                         android:text="Confirmar"
-                        android:background="@drawable/buttons"
                         android:onClick="cerrarEventoConfirmar"/>
 
                 </LinearLayout>
