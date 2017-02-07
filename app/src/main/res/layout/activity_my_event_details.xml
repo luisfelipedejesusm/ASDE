@@ -136,6 +136,7 @@
                         android:onClick="tomarFoto"
                         android:id="@+id/img_foto_cerrar"/>
                     <TextView
+                        android:id="@+id/textFechaFotoCierre"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerHorizontal="true"

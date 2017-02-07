@@ -85,7 +85,9 @@ public class MyEventDetails extends AppCompatActivity implements GoogleApiClient
     String mPath; // direccion de la imagen en el celular
     String fechaFoto;
 
-    ImageView imgfoto;
+    ImageView imgfoto;//Imagen foto de cierre del evento
+    TextView textFotoCierre; //Aqui se colocara la fecha de captura de la foto de cierre
+
 
     public static final String UPDATE_EVENT = "http://199.89.55.4/ASDE/api/v1/operador/updatevent";
 
@@ -96,6 +98,7 @@ public class MyEventDetails extends AppCompatActivity implements GoogleApiClient
         setContentView(R.layout.activity_my_event_details);
 
         imgfoto = (ImageView) findViewById(R.id.img_foto_cerrar);
+        textFotoCierre = (TextView) findViewById(R.id.textFechaFotoCierre);
 
         //get clicked event using its id
         getMyEvents();
@@ -369,7 +372,7 @@ try {
             SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
             Calendar c = Calendar.getInstance();
             fechaFoto = df.format(c.getTime()).trim(); //Obtenemos fecha de la foto
-
+            textFotoCierre.setText(fechaFoto);
 
             String imagename = fechaFoto + ".png";
             mPath = Environment.getExternalStorageDirectory() + File.separator + MEDIA_DIRECTORY + File.separator + imagename;
