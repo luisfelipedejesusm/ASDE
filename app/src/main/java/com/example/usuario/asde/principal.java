@@ -253,7 +253,7 @@ String[] opciones = {
         "Publicidad",
         "Basura",
         "Iluminacion",
-        "Reparacicon"
+        "Reparación"
 };
 
         Spinner spiner = (Spinner) findViewById(R.id.spinner_evento);
@@ -422,7 +422,8 @@ String[] opciones = {
             Glide.with(this).load(mPath).into(imgFoto);
            // imgFoto.setImageBitmap(bitmap);
        //     getStringImage(bit);
-            if (bitmap!=null){
+
+            if (bitmap!= null){
                 btnEnviar.setEnabled(false);
                 btnEnviar.setText("");
                 progressBar.setVisibility(View.VISIBLE);
@@ -440,7 +441,7 @@ String[] opciones = {
         BitmapFactory.Options options;
         try {
             bitmap = BitmapFactory.decodeFile(path);
-            return bitmap;
+            return resizePhoto(bitmap,350,true);//Aqui se agrego la funcion resizePhoto
         } catch (OutOfMemoryError e) {
             try {
                 options = new BitmapFactory.Options();
@@ -457,9 +458,35 @@ String[] opciones = {
             }
         }
         Toast.makeText(this, bitmap.getWidth(), Toast.LENGTH_SHORT).show();
-        return bitmap;
+
+
+        return resizePhoto(bitmap,350,true);
 
     }
+
+    /**
+     * This method resize the photo
+     *
+     * @param realImage    the bitmap of image
+     * @param maxImageSize the max image size percentage
+     * @param filter       the filter
+     * @return a bitmap of the photo rezise
+     */
+    public static Bitmap resizePhoto(Bitmap realImage, float maxImageSize, boolean filter) {
+        float ratio = Math.min(
+                (float) maxImageSize / realImage.getWidth(),
+                (float) maxImageSize / realImage.getHeight());
+        int width = Math.round((float) ratio * realImage.getWidth());
+        int height = Math.round((float) ratio * realImage.getHeight());
+
+        Bitmap newBitmap = Bitmap.createScaledBitmap(realImage, width,
+                height, filter);
+        return newBitmap;
+    }
+
+
+
+
 
     private class ConvertStringImage extends AsyncTask<Bitmap, Void, Void>{
 
@@ -482,10 +509,6 @@ String[] opciones = {
         }
 
     }
-
-
-
-
 
 
 

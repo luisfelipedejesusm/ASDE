@@ -428,7 +428,7 @@ try {
         BitmapFactory.Options options;
         try {
             bitmap = BitmapFactory.decodeFile(path);
-            return bitmap;
+            return resizePhoto(bitmap,350,true);
         } catch (OutOfMemoryError e) {
             try {
                 options = new BitmapFactory.Options();
@@ -445,9 +445,33 @@ try {
             }
         }
        // Toast.makeText(this, bitmap.getWidth(), Toast.LENGTH_SHORT).show();
-        return bitmap;
+        return resizePhoto(bitmap,350,true);
 
     }
+
+
+    /**
+     * This method resize the photo
+     *
+     * @param realImage    the bitmap of image
+     * @param maxImageSize the max image size percentage
+     * @param filter       the filter
+     * @return a bitmap of the photo rezise
+     */
+    public static Bitmap resizePhoto(Bitmap realImage, float maxImageSize, boolean filter) {
+        float ratio = Math.min(
+                (float) maxImageSize / realImage.getWidth(),
+                (float) maxImageSize / realImage.getHeight());
+        int width = Math.round((float) ratio * realImage.getWidth());
+        int height = Math.round((float) ratio * realImage.getHeight());
+
+        Bitmap newBitmap = Bitmap.createScaledBitmap(realImage, width,
+                height, filter);
+        return newBitmap;
+    }
+
+
+
 
     private class ConvertStringImage extends AsyncTask<Bitmap, Void, Boolean> {//Tarea asogcrona que convierte un Bitmap en un String64
 
