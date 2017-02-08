@@ -317,7 +317,7 @@ try {
 
 
     }
-/*
+
     public void showFullImage(View view){
         ImageView imgEvento = (ImageView) findViewById(R.id.foto_evento);
         imgEvento.buildDrawingCache();
@@ -327,7 +327,7 @@ try {
         intent.putExtra("imgName", c_evento.getPathFoto());
         startActivity(intent);
 
-    } */
+    }
 
 //here we take the eent from the other thread and update the textviews in the activity
     private void updateInfo(Eventos evento) {

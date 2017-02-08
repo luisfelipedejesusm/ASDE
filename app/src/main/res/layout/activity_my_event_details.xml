@@ -34,6 +34,7 @@
                     android:layout_alignParentTop="true"
                     android:layout_centerHorizontal="true"
                     android:id="@+id/foto_evento"
+                    android:onClick="showFullImage"
                     />
                 <ProgressBar
                     android:id="@+id/progress_bar_my_event_detail"
