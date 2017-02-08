@@ -42,7 +42,10 @@
         <activity
             android:name=".MyEventDetails"
             android:screenOrientation="portrait" />
-        <activity android:name=".ShowFoto"></activity>
+        <activity android:name=".ShowFoto"
+            android:theme="@style/Theme.AppCompat.NoActionBar"
+            >
+        </activity>
     </application>
 
 </manifest>

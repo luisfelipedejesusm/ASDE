@@ -320,7 +320,7 @@ try {
         Bitmap bitmap = imgEvento.getDrawingCache();
 
         Intent intent = new Intent(this,ShowFoto.class);
-        intent.putExtra("imgBitmap", bitmap);
+        intent.putExtra("imgName", c_evento.getPathFoto());
         startActivity(intent);
 
     }

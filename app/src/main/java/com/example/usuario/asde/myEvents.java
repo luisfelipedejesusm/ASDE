@@ -53,6 +53,7 @@ public class myEvents extends AppCompatActivity {
         eventos = e;
         itemsAdapter = new clientesAdapter(this,0,eventos);
         listViewGeneral.setAdapter(itemsAdapter);
+        listViewGeneral.setEmptyView(findViewById(R.id.EmptyViewEvents));
         listViewGeneral.setOnItemClickListener(new AdapterView.OnItemClickListener()
         {
             @Override

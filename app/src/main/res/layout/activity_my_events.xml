@@ -13,4 +13,27 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/list_view_my_events"></ListView>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:visibility="gone"
+        android:id="@+id/EmptyViewEvents">
+        <ImageView
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:alpha="0.5"
+            android:src="@mipmap/asde"
+            android:layout_gravity="center_horizontal"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"
+            android:text="No hay eventos registrados actualmente"
+            />
+    </LinearLayout>
+
 </RelativeLayout>
