@@ -1,6 +1,7 @@
 package com.example.usuario.asde;
 
 import android.Manifest;
+import android.annotation.TargetApi;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -15,12 +16,14 @@ import android.location.LocationManager;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -36,6 +39,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -71,6 +75,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import static android.Manifest.permission.CAMERA;
+import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
+
 public class principal extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
     public static final String SEND_DATA_URL = "http://199.89.55.4/ASDE/api/v1/operador/senddata";
@@ -80,8 +87,9 @@ public class principal extends AppCompatActivity implements GoogleApiClient.Conn
 
     /********Entradas de la Interfaz de la Clase Principal.java***********/
 
-    Button btnEnviar;   // Enviar evento primera vez a webservice
+    RelativeLayout Relative_Actividad_Principal;
 
+    Button btnEnviar;   // Enviar evento primera vez a webservice
 
     ImageView imgFoto;
     EditText editNombre;
@@ -158,6 +166,7 @@ public class principal extends AppCompatActivity implements GoogleApiClient.Conn
         checkForUsers();
 
 
+        Relative_Actividad_Principal = (RelativeLayout)findViewById(R.id.activity_principal);
 
         btnEnviar = (Button)findViewById(R.id.buttonEnviar);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
@@ -259,21 +268,20 @@ String[] opciones = {
 
         spiner.setAdapter(array);
 
-        //ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this).build();
-       // ImageLoader.getInstance().init(config);
+
 
     } // Cierre de la funcion onCreate
 
 
 
 
-    private void sendingData(){
+    private void sendingData(){ //Muestra el ProgressDialog
         progressDialog = ProgressDialog.show(this,"","Enviando Datos, Espere....", true);
 
     }
     private void dataRetrived(){
         progressDialog.dismiss();
-    }
+    } // Cierra el ProgressDialog
 
 
 
@@ -349,6 +357,29 @@ String[] opciones = {
 
       private boolean myRequestStoragePermission(){
 
+          if(Build.VERSION.SDK_INT < Build.VERSION_CODES.M){
+              return true;
+          }
+
+          if((checkSelfPermission(WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED)&&
+                  (checkSelfPermission(CAMERA)== PackageManager.PERMISSION_GRANTED)){
+              return true;
+          }
+
+          if((shouldShowRequestPermissionRationale(WRITE_EXTERNAL_STORAGE))||(shouldShowRequestPermissionRationale(CAMERA))){
+
+              Snackbar.make(Relative_Actividad_Principal,"Los Permisos son necesarios para poder usar la aplicación",
+                      Snackbar.LENGTH_INDEFINITE).setAction(android.R.string.ok, new View.OnClickListener() {
+                  @TargetApi(Build.VERSION_CODES.M)
+                  @Override
+                  public void onClick(View v) {
+                      requestPermissions(new String[]{WRITE_EXTERNAL_STORAGE,CAMERA}, MY_PERMISSIONS);
+                  }
+              }).show();
+
+          }else{
+              requestPermissions(new String[]{WRITE_EXTERNAL_STORAGE,CAMERA}, MY_PERMISSIONS);
+          }
 
 
           return false;
@@ -413,13 +444,11 @@ String[] opciones = {
                         }
                     });
 
-            //bitmap = BitmapFactory.decodeFile(mPath);
 
             bitmap = getBitmap(mPath);
 
             Glide.with(this).load(mPath).into(imgFoto);
-           // imgFoto.setImageBitmap(bitmap);
-       //     getStringImage(bit);
+
 
             if (bitmap!= null){
                 btnEnviar.setEnabled(false);
@@ -427,7 +456,7 @@ String[] opciones = {
                 progressBar.setVisibility(View.VISIBLE);
                 new ConvertStringImage().execute(bitmap);//Creacion y llamada a la tarea ConvertStringImage
             }else{
-                Toast.makeText(this, "Error en la creacion del bitmap. Debe tomar la foto a baja resolucion.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Error en la creacion del bitmap. Debe tomar una foto de baja resolución.", Toast.LENGTH_SHORT).show();
             }
             getDireccion("http://maps.googleapis.com/maps/api/geocode/json?latlng=" + Latitud + ","+ Longitud + "&sensor=true");
 
@@ -603,12 +632,12 @@ String[] opciones = {
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+
         if (requestCode == PETICION_PERMISO_LOCALIZACION) {
             if (grantResults.length == 1
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
                 //Permiso concedido
-
                 @SuppressWarnings("MissingPermission")
                 Location lastLocation =
                         LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
@@ -618,12 +647,51 @@ String[] opciones = {
             } else {
                 //Permiso denegado:
                 //Deberíamos deshabilitar toda la funcionalidad relativa a la localización.
-
                 Log.e(LOGTAG, "Permiso denegado");
             }
         }
+
+        if(requestCode == MY_PERMISSIONS){
+            if(grantResults.length == 2 && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED){
+                Toast.makeText(this, "Permisos Aceptados", Toast.LENGTH_SHORT).show();
+                imgFoto.setClickable(true);
+            }else{
+                showExplanation();
+            }
+        }
+
+
     }
 
+    private void showExplanation() {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(principal.this);
+        builder.setTitle("Permisos Denegados");
+        builder.setMessage("Para usar la aplicación necesita aceptar los permisos");
+
+        builder.setPositiveButton("Aceptar", new DialogInterface.OnClickListener(){
+          @Override
+            public void onClick(DialogInterface dialog, int which){
+
+             Intent intent =  new Intent();
+              intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+              Uri uri = Uri.fromParts("package", getPackageName(), null);
+              intent.setData(uri);
+              startActivity(intent);
+          }
+
+        });
+       builder.setNegativeButton("Cancelar",new DialogInterface.OnClickListener(){
+           @Override
+           public void onClick(DialogInterface dialog, int which){
+              dialog.dismiss();
+               finish();
+           }
+
+       });
+
+        builder.show();
+    }
 
 
     /**************************************************Accedemos a la API de GOOGLE para obtener direccion *********************************/
@@ -766,15 +834,15 @@ String[] opciones = {
                                     dataRetrived();
                                     // Toast.makeText(principal.this, error.toString(), Toast.LENGTH_LONG).show();
                                     if (error instanceof TimeoutError || error instanceof NoConnectionError) {
-                                        Toast.makeText(principal.this, "Tiempo para conexiÃ³n finalizado, revise su conexion a internet",Toast.LENGTH_LONG).show();
+                                        Toast.makeText(principal.this, "Tiempo para conexión finalizado, revise su conexión a internet",Toast.LENGTH_LONG).show();
                                     } else if (error instanceof AuthFailureError) {
-                                        Toast.makeText(principal.this, "Usuario o ContraseÃ±a Incorrecta, Revise nuevamente su informacion",Toast.LENGTH_LONG).show();
+                                        Toast.makeText(principal.this, "Usuario o Contraseña Incorrecta, Revise nuevamente su información",Toast.LENGTH_LONG).show();
                                     } else if (error instanceof ServerError) {
-                                        Toast.makeText(principal.this, "Error en el servidor, Contactese con el suplidor de su aplicacion",Toast.LENGTH_LONG).show();
+                                        Toast.makeText(principal.this, "Error en el servidor, Contacte con el suplidor de su aplicación",Toast.LENGTH_LONG).show();
                                     } else if (error instanceof NetworkError) {
-                                        Toast.makeText(principal.this, "Error de coneccion. Revise el estado de su coneccion a internet",Toast.LENGTH_LONG).show();
+                                        Toast.makeText(principal.this, "Error de conexión. Revise el estado de su conexión a internet",Toast.LENGTH_LONG).show();
                                     } else if (error instanceof ParseError) {
-                                        Toast.makeText(principal.this, "Problemas al ejecutar la aplicacion, Contactese con el suplidor de su aplicacion",Toast.LENGTH_LONG).show();
+                                        Toast.makeText(principal.this, "Problemas al ejecutar la aplicación, Contacte con el suplidor de su aplicación",Toast.LENGTH_LONG).show();
                                     }
 
                                 }

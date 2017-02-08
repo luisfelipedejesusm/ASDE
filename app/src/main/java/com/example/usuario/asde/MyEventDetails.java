@@ -91,6 +91,7 @@ public class MyEventDetails extends AppCompatActivity implements GoogleApiClient
     TextView textFotoCierre; //Aqui se colocara la fecha de captura de la foto de cierre
 
     Button btnConfirmarCierre;
+    Button btnCancelar;
 
 
     public static final String UPDATE_EVENT = "http://199.89.55.4/ASDE/api/v1/operador/updatevent";
@@ -103,8 +104,10 @@ public class MyEventDetails extends AppCompatActivity implements GoogleApiClient
 
         imgfoto = (ImageView) findViewById(R.id.img_foto_cerrar);
         textFotoCierre = (TextView) findViewById(R.id.textFechaFotoCierre);
+        btnCancelar = (Button)findViewById(R.id.btnCancelar);
         btnConfirmarCierre = (Button)findViewById(R.id.btnConfirmar);
         btnConfirmarCierre.setEnabled(false);
+
 
 
         //get clicked event using its id
@@ -157,7 +160,7 @@ try {
                 @Override
                 public void onErrorResponse(VolleyError error) {
                     dataRetrived();
-                    // Toast.makeText(principal.this, error.toString(), Toast.LENGTH_LONG).show();
+
                     if (error instanceof TimeoutError || error instanceof NoConnectionError) {
                         Toast.makeText(MyEventDetails.this, "Tiempo para conexión finalizado, revise su conexión a internet", Toast.LENGTH_LONG).show();
                     } else if (error instanceof AuthFailureError) {
@@ -179,6 +182,7 @@ try {
             Map<String, String> map = new HashMap<String, String>();
             map.put("eventoID", c_evento.getId());
             map.put("foto", imagen64);
+            map.put("fechafinal",fechaFoto);
             return map;
         }
     };
@@ -313,7 +317,7 @@ try {
 
 
     }
-
+/*
     public void showFullImage(View view){
         ImageView imgEvento = (ImageView) findViewById(R.id.foto_evento);
         imgEvento.buildDrawingCache();
@@ -323,7 +327,7 @@ try {
         intent.putExtra("imgBitmap", bitmap);
         startActivity(intent);
 
-    }
+    } */
 
 //here we take the eent from the other thread and update the textviews in the activity
     private void updateInfo(Eventos evento) {

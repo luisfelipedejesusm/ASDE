@@ -34,7 +34,7 @@
                     android:layout_alignParentTop="true"
                     android:layout_centerHorizontal="true"
                     android:id="@+id/foto_evento"
-                    android:onClick="showFullImage"/>
+                    />
                 <ProgressBar
                     android:id="@+id/progress_bar_my_event_detail"
                     android:layout_width="match_parent"
@@ -146,6 +146,7 @@
                     android:layout_gravity="right"
                     android:padding="10dp">
                     <Button
+                        android:id="@+id/btnCancelar"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="right"
@@ -154,6 +155,7 @@
                         android:padding="10dp"
                         android:background="@drawable/buttons"
                         android:text="Cancelar"
+                        android:onClick="cancelarCierre"
                         />
                     <Button
                         android:id="@+id/btnConfirmar"
