@@ -3,9 +3,7 @@
     <item
         android:id="@+id/newEventButton"
         android:title="Nuevo Evento"/>
-    <item
-        android:id="@+id/eventsRegistered"
-        android:title="Registros"/>
+
     <item
         android:id="@+id/myEvents"
         android:title="Mis Tareas"/>
